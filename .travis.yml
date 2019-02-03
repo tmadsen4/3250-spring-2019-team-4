@@ -1,1 +1,9 @@
 language: python
+
+install:
+  pip install -r requirements.txt
+  pip install coverage
+
+script:
+  python -m unittest
+  
