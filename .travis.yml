@@ -5,7 +5,7 @@ python:
 cache:
   pip
 install:
-  -pip install coverage
+  pip install coverage
 
 script:
   - python -m unittest discover
