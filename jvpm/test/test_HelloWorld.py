@@ -1,30 +1,17 @@
 import unittest
-import sys
 import jvpm.HelloWorld
-from unittest.mock import Mock, call
+from unittest.mock import patch, call
 
 class TestHelloWorld(unittest.TestCase):
-    def test_HelloWorld(self):
-        sys.stdout = unittest.mock.Mock()
+    @patch('builtins.print')
+    def test_HelloWorld(self, mock_print):
         jvpm.HelloWorld.HelloWorld()
-        sys.stdout.assert_has_calls(
-            [call.write('Hello world'), call.write('\n')]
-        )
-        sys.stdout.assert_has_calls(
-            [call.write('Hello Kenji Morizono'), call.write('\n')]
-        )
-        sys.stdout.assert_has_calls(
-            [call.write('Hello Ryan McCullough'), call.write('\n')]
-        )
-        sys.stdout.assert_has_calls(
-            [call.write('Hello Ian Mutahi'), call.write('\n')]
-        )
-        sys.stdout.assert_has_calls(
-            [call.write('Hello Carlos Olivas'), call.write('\n')]
-        )
-        sys.stdout.assert_has_calls(
-            [call.write('Hello Gerom Pagaduan'), call.write('\n')]
-        )
-        sys.stdout.assert_has_calls(
-            [call.write('Hello Tanner Madsen'), call.write('\n')]
-        )
+        self.assertEqual(mock_print.mock_calls, [
+            call('Hello world'),
+            call('Hello Kenji Morizono'),
+            call('Hello Ryan McCullough'),
+            call('Hello Ian Mutahi'),
+            call('Hello Carlos Olivas'),
+            call('Hello Gerom Pagaduan'),
+            call('Hello Tanner Madsen')
+        ])
