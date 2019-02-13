@@ -1,5 +1,4 @@
 
-
 class JavaClassFile:
 
     # Python "Constructor"
@@ -25,3 +24,32 @@ class JavaClassFile:
             # I would put in #04X, 0xff would be #04x
             magic_num += format(self.data[i], "02X")
         return magic_num
+
+    def get_major(self):
+        major_version = format(self.data[6], "02X") + format(self.data[7], "02X")
+
+        return major_version
+
+    def get_minor(self):
+        minor_version = format(self.data[4], "02X") + format(self.data[5], "02X")
+
+        return minor_version
+
+    def get_pool_count_raw(self):
+        pool_count_raw = format(self.data[8], "02X") + format(self.data[9], "02X")
+
+        return pool_count_raw
+
+    def get_pool_count(self):
+        pool_count = int(self.get_pool_count_raw(), 16) - 1
+        pool_count = "00" + format(pool_count, "02X")
+
+        return pool_count
+
+a = JavaClassFile()
+print(a.data)
+print(a.get_magic_number())
+print(a.get_major())
+print(a.get_minor())
+print(a.get_pool_count_raw())
+print(a.get_pool_count())
