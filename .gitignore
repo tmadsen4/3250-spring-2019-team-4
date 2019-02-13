@@ -114,4 +114,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# trash files
+.idea/
 .DS_Store
