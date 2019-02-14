@@ -41,8 +41,9 @@ class JavaClassFile:
         return pool_count_raw
 
     def get_pool_count(self):
+        # Pool count should be made of 2 bytes so 04X is the format parameter
         pool_count = int(self.get_pool_count_raw(), 16) - 1
-        pool_count = "00" + format(pool_count, "02X")
+        pool_count = format(pool_count, "04X")
 
         return pool_count
 
