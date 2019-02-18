@@ -64,6 +64,7 @@ class JavaClassFile:
         # Loop will stop once all constant values have been collected
         for i in range(self.get_pool_count_int()):
             data_value = format(self.data[byte_location], "02X")
+            # Tag represents a string, which means there is still a 2 byte size value that needs to be read
             if data_value == "01":
                 constant += data_value
                 # Get the 2 prefix bytes that describe the string size
@@ -84,6 +85,7 @@ class JavaClassFile:
                 constant_table.append(constant)
                 constant = ""
                 byte_location += int(num_bytes)
+            # Tag represents something else, which means only that value needs to be read
             else:
                 tag = ConstantPoolTag(data_value)
                 num_bytes = tag.get_byte_length(data_value)
@@ -99,6 +101,7 @@ class JavaClassFile:
 
         return constant_table, size
     # For Testing
+
     def print_data(self):
         print("Magic Number: " + self.get_magic_number())
         print("Major Version: " + self.get_major())
