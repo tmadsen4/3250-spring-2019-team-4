@@ -1,3 +1,5 @@
+from jvpm import ConstantPoolTag
+
 
 class JavaClassFile:
 
@@ -54,9 +56,27 @@ class JavaClassFile:
         return int(self.get_pool_count(), 16)
 
     def get_constant_table(self):
+        byte_location = 10 # First tag is at byte 10
+        data_value = ""
+        tag = ""
+        num_bytes = 0
+        is_tag = True
+        constant_table = []
 
+        # Loop will stop once all constant values have been collected
         for i in range(self.get_pool_count_int()):
-            print("TODO")
+            if is_tag:
+                data_value = self.data[byte_location]
+                if tag is "01":
+                    print("TODO") # Will be 2 + some offset stored in a prefix byte
+                else:
+                    tag = ConstantPoolTag(data_value)
+                    num_bytes = tag.get_byte_length()
+
+                byte_location += 1
+                is_tag = False
+            else:
+                print("TODO")
 
 
 a = JavaClassFile()
