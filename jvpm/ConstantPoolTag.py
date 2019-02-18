@@ -20,20 +20,20 @@ class ConstantPoolTag(Enum):
     # Returns number of bytes for specific constant based on
     def get_byte_length(self, tag):
         return {
-            "01": 2,    # This represents how many bytes the string size variable is [e.g 00 05 means total size is 5]
-            "03": 4,
-            "04": 4,
-            "05": 8,
-            "06": 8,
-            "07": 2,
-            "08": 2,
-            "09": 4,
-            "0A": 4,
-            "0B": 4,
-            "0C": 4,
-            "0F": 3,
-            "10": 2,
-            "12": 4
+            "01": 2,    # This represents how many bytes the UTF-8 string size variable is [e.g 00 05]
+            "03": 4,    # Integer
+            "04": 4,    # Float
+            "05": 8,    # Long
+            "06": 8,    # Double, 64-bit
+            "07": 2,    # Class Reference
+            "08": 2,    # String Reference
+            "09": 4,    # Field Reference
+            "0A": 4,    # Method Reference
+            "0B": 4,    # Interface Method Reference
+            "0C": 4,    # Name and Type Descriptor
+            "0F": 3,    # Method Handle
+            "10": 2,    # Method Type
+            "12": 4     # InvokeDynamic
         }.get(tag, None)
 
     def __init__(self, tag):
