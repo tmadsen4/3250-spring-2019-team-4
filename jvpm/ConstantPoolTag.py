@@ -20,7 +20,7 @@ class ConstantPoolTag(Enum):
     # Returns number of bytes for specific constant based on
     def get_byte_length(self, tag):
         return {
-            "01": 2,    # Still need to add x bytes
+            "01": 2,    # This represents how many bytes the string size variable is [e.g 00 05 means total size is 5]
             "03": 4,
             "04": 4,
             "05": 8,
