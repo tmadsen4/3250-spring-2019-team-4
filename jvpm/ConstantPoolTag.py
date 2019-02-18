@@ -34,7 +34,7 @@ class ConstantPoolTag(Enum):
             "0F": 5,
             "10": 2,
             "12": 4
-        }.get(tag, -1)
+        }.get(tag, None)
 
     def __init__(self, tag):
         self.data = self.get_byte_length(tag)
