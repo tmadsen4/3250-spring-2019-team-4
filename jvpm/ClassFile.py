@@ -47,10 +47,11 @@ class JavaClassFile:
 
         return pool_count
 
-a = JavaClassFile()
-print(a.data)
-print(a.get_magic_number())
-print(a.get_major())
-print(a.get_minor())
-print(a.get_pool_count_raw())
-print(a.get_pool_count())
+
+#a = JavaClassFile()
+#print(a.data)
+#print(a.get_magic_number())
+#print(a.get_major())
+#print(a.get_minor())
+#print(a.get_pool_count_raw())
+#print(a.get_pool_count())

@@ -1,17 +1,20 @@
+
 import unittest
+from jvpm import ClassFile
 
-class TestClassFile(unittest.TestCase):
-    def setUp(self):
-    jvpm.ClassFile.ClassFile()
+class testClass(unittest.TestCase):
+    data = ClassFile.JavaClassFile()
+    def test_get_magic_number(self):
+        self.assertEqual(ClassFile.JavaClassFile.get_magic_number(self.data), 'CAFEBABE')
+        
+    def test_get_major(self):
+        self.assertEqual(ClassFile.JavaClassFile.get_minor(self.data), '0000')
 
-    def test_magic(self):
-        self.assertEqual(self.get_magic(), 'CAFEBABE')
+    def test_get_minor(self):
+        self.assertEqual(ClassFile.JavaClassFile.get_major(self.data), '0037')
 
-    def test_minor(self):
-        self.assertEqual(self.get_minor(), 1)
-
-    def test_major(self):
-        self.assertEqual(self.get_major(), 5)
-
+    def test_pool_count_raw(self):
+        self.assertEqual(ClassFile.JavaClassFile.get_pool_count(self.data), '000E')
+        
     def test_pool_count(self):
-        self.assertEqual(self.get_pool_count(), 16)
+        self.assertEqual(ClassFile.JavaClassFile.get_pool_count(self.data), '000E')
