@@ -31,7 +31,7 @@ class ConstantPoolTag(Enum):
             "0A": 4,
             "0B": 4,
             "0C": 4,
-            "0F": 5,
+            "0F": 3,
             "10": 2,
             "12": 4
         }.get(tag, None)

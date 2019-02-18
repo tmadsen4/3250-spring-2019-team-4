@@ -59,13 +59,30 @@ class JavaClassFile:
         byte_location = 10  # First tag is at byte 10
         constant = ""
         constant_table = []
+        tag = ConstantPoolTag("01")
         size = 0
 
         # Loop will stop once all constant values have been collected
         for i in range(self.get_pool_count_int()):
             data_value = format(self.data[byte_location], "02X")
             if data_value == "01":
-                print("TODO")
+                byte_location += 1
+                data_value = format(self.data[byte_location], "02X")
+                if data_value == "00":
+                    byte_location += 1
+                    print(byte_location)
+                else:
+                    tag = ConstantPoolTag("01")
+                    num_bytes = tag.get_byte_length("01") + int(data_value, 16)
+                    byte_location += 1
+                    for j in range(byte_location, byte_location + int(num_bytes)):
+                        constant += format(self.data[j], "02X")
+                        size += 1
+
+                    constant_table.append(constant)
+                    constant = ""
+                    byte_location += int(num_bytes)
+                    print(byte_location)
             else:
                 tag = ConstantPoolTag(data_value)
                 num_bytes = tag.get_byte_length(data_value)
