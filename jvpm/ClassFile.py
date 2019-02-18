@@ -57,11 +57,9 @@ class JavaClassFile:
 
     def get_constant_table(self):
         byte_location = 10  # First tag is at byte 10
-        data_value = ""
-        tag = ""
-        num_bytes = 0
         constant = ""
         constant_table = []
+        size = 0
 
         # Loop will stop once all constant values have been collected
         for i in range(self.get_pool_count_int()):
@@ -74,13 +72,15 @@ class JavaClassFile:
                 byte_location += 1
                 for j in range(byte_location, byte_location + int(num_bytes)):
                     constant += format(self.data[j], "02X")
+                    size += 1
 
                 constant_table.append(constant)
                 constant = ""
                 byte_location += int(num_bytes)
                 print(byte_location)
 
-        return constant_table
+        return constant_table, size
+
 a = JavaClassFile()
 print(a.data)
 print(a.get_magic_number())
