@@ -63,7 +63,6 @@ class JavaClassFile:
 
         # Loop will stop once all constant values have been collected
         for i in range(self.get_pool_count_int()):
-            print(byte_location)
             data_value = format(self.data[byte_location], "02X")
             if data_value == "01":
                 constant += data_value
@@ -99,12 +98,14 @@ class JavaClassFile:
                 byte_location += int(num_bytes)
 
         return constant_table, size
+    # For Testing
+    def print_data(self):
+        print("Magic Number: " + self.get_magic_number())
+        print("Major Version: " + self.get_major())
+        print("Minor Version: " + self.get_minor())
+        print("Pool Count: " + self.get_pool_count_raw())
+        print("Pool Count - 1: " + self.get_pool_count())
+        print("Constant Table: " + str(self.get_constant_table()))
 
 a = JavaClassFile()
-print(a.data)
-print(a.get_magic_number())
-print(a.get_major())
-print(a.get_minor())
-print(a.get_pool_count_raw())
-print(a.get_pool_count())
-print(a.get_constant_table())
+a.print_data()
