@@ -1,3 +1,5 @@
+from jvpm.ConstantPoolTag import *
+
 
 class JavaClassFile:
 
@@ -47,11 +49,66 @@ class JavaClassFile:
 
         return pool_count
 
+    def get_pool_count_raw_int(self):
+        return int(self.get_pool_count_raw(), 16)
 
-#a = JavaClassFile()
-#print(a.data)
-#print(a.get_magic_number())
-#print(a.get_major())
-#print(a.get_minor())
-#print(a.get_pool_count_raw())
-#print(a.get_pool_count())
+    def get_pool_count_int(self):
+        return int(self.get_pool_count(), 16)
+
+    def get_constant_table(self):
+        byte_location = 10  # First tag is at byte 10
+        constant = ""
+        constant_table = []
+        size = 0
+
+        # Loop will stop once all constant values have been collected
+        for i in range(self.get_pool_count_int()):
+            data_value = format(self.data[byte_location], "02X")
+            # Tag represents a string, which means there is still a 2 byte size value that needs to be read
+            if data_value == "01":
+                constant += data_value
+                # Get the 2 prefix bytes that describe the string size
+                byte_location += 1
+                data_value = format(self.data[byte_location], "02X")
+                byte_location += 1
+                data_value += format(self.data[byte_location], "02X")
+                byte_location += 1
+                constant += data_value
+                size += 2
+                # Get the offset for a string from the ConstantPoolTag Class
+                tag = ConstantPoolTag("01")
+                num_bytes = int(data_value, 16)
+                for k in range(byte_location, byte_location + int(num_bytes)):
+                    constant += format(self.data[k], "02X")
+                    size += 1
+
+                constant_table.append(constant)
+                constant = ""
+                byte_location += int(num_bytes)
+            # Tag represents something else, which means only that value needs to be read
+            else:
+                tag = ConstantPoolTag(data_value)
+                num_bytes = tag.get_byte_length(data_value)
+                constant += data_value
+                byte_location += 1
+                for j in range(byte_location, byte_location + int(num_bytes)):
+                    constant += format(self.data[j], "02X")
+                    size += 1
+
+                constant_table.append(constant)
+                constant = ""
+                byte_location += int(num_bytes)
+
+        return constant_table, size
+    # For Testing
+
+    def print_data(self):
+        print("Magic Number: " + self.get_magic_number())
+        print("Major Version: " + self.get_major())
+        print("Minor Version: " + self.get_minor())
+        print("Pool Count: " + self.get_pool_count_raw())
+        print("Pool Count - 1: " + self.get_pool_count())
+        print("Constant Table: " + str(self.get_constant_table()))
+
+a = JavaClassFile()
+a.print_data()
