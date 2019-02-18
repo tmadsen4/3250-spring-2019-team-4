@@ -47,6 +47,18 @@ class JavaClassFile:
 
         return pool_count
 
+    def get_pool_count_raw_int(self):
+        return int(self.get_pool_count_raw(), 16)
+
+    def get_pool_count_int(self):
+        return int(self.get_pool_count(), 16)
+
+    def get_constant_table(self):
+
+        for i in range(self.get_pool_count_int()):
+            print("TODO")
+
+
 a = JavaClassFile()
 print(a.data)
 print(a.get_magic_number())
