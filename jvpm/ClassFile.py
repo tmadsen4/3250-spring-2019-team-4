@@ -59,33 +59,36 @@ class JavaClassFile:
         byte_location = 10  # First tag is at byte 10
         constant = ""
         constant_table = []
-        tag = ConstantPoolTag("01")
         size = 0
 
         # Loop will stop once all constant values have been collected
         for i in range(self.get_pool_count_int()):
+            print(byte_location)
             data_value = format(self.data[byte_location], "02X")
             if data_value == "01":
+                constant += data_value
+                # Get the 2 prefix bytes that describe the string size
                 byte_location += 1
                 data_value = format(self.data[byte_location], "02X")
-                if data_value == "00":
-                    byte_location += 1
-                    print(byte_location)
-                else:
-                    tag = ConstantPoolTag("01")
-                    num_bytes = tag.get_byte_length("01") + int(data_value, 16)
-                    byte_location += 1
-                    for j in range(byte_location, byte_location + int(num_bytes)):
-                        constant += format(self.data[j], "02X")
-                        size += 1
+                byte_location += 1
+                data_value += format(self.data[byte_location], "02X")
+                byte_location += 1
+                constant += data_value
+                size += 2
+                # Get the offset for a string from the ConstantPoolTag Class
+                tag = ConstantPoolTag("01")
+                num_bytes = int(data_value, 16)
+                for k in range(byte_location, byte_location + int(num_bytes)):
+                    constant += format(self.data[k], "02X")
+                    size += 1
 
-                    constant_table.append(constant)
-                    constant = ""
-                    byte_location += int(num_bytes)
-                    print(byte_location)
+                constant_table.append(constant)
+                constant = ""
+                byte_location += int(num_bytes)
             else:
                 tag = ConstantPoolTag(data_value)
                 num_bytes = tag.get_byte_length(data_value)
+                constant += data_value
                 byte_location += 1
                 for j in range(byte_location, byte_location + int(num_bytes)):
                     constant += format(self.data[j], "02X")
@@ -94,7 +97,6 @@ class JavaClassFile:
                 constant_table.append(constant)
                 constant = ""
                 byte_location += int(num_bytes)
-                print(byte_location)
 
         return constant_table, size
 
