@@ -111,12 +111,5 @@ class JavaClassFile:
         print("Constant Table: " + str(self.get_constant_table()))
 
 a = JavaClassFile()
-<<<<<<< HEAD
-#print(a.data)
-print(a.get_magic_number())
-print(a.get_major())
-print(a.get_minor())
-print(a.get_pool_count_raw())
-print(a.get_pool_count())
 a.print_data()
->>>>>>> 7ec51e89cd055075789fa18e1b58c0fa2aae9d0e
+
