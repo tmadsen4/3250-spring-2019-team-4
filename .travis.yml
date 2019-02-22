@@ -1,26 +1,19 @@
-# disable sudo to speed up the build
 sudo: false
-
 language: python
 python:
-  - "3.6"
-
-cache:
-  pip
+- '3.6'
+cache: pip
 install:
-  - pip install coverage
-  - pip install codecov
-
+- pip install coverage
+- pip install codecov
 script:
-  - python -m unittest discover
-  - coverage run -m unittest discover
-  - coverage report --omit=*test*
-  
+- python -m unittest discover
+- coverage run -m unittest discover
+- coverage report --omit=*test*
 env:
+  matrix:
   - CODECOV_TOKEN="aaa4075d-6496-44a9-baf9-ba8d86abf468"
-  
-# Push results back to codecov
-after_success: 
-  - codecov
-
-  
+  global:
+    secure: aJEEYQBM+6WhH/ZHiT4yjURh3G4RJ/RY5SaqJWEfnZmFN/2C6qXrotCn/7ZfrWtfI3yxpl6hyMcbuz5wb3ZAxn5iNXJdNl1qFvMWvVF15kwkQgMffTqWsQzEWU5xHAlqdp75std6xLGgy/ydgimzbb/jlKVcsxEXGH5vKLyOIE6sycn/499G76vVWkdsENG5E3FzZMzj6gmP6L73qF2usl2X0INXQTNykUfgMfBGeHXCRd+ovtoxUxm+VUX2BT0ofHOxPODPIhwyw3ejrRgG6F8yOKhYVJOM5KKxyGI1lBdAKvYB2IQzeuPzzOm2eNLbpCHVPQVUyYkNly8wnrpAagxQrhjuJBJvCiPK728HGrq2M7TX2+HZ3seCnd+/GE6yRRRKrcUGImtTC1P2j7/JadoIonrs3HixbODQLWFtG70DwSH0E+0BBNJwG6Cmh8e2ug2idcauftmq02gQaymzbs2P6YmJGukfttikChFQs7hFZbffZJJHHIjxPo+aYQoIkwFkuwRpJhWPf8cTgL+xu3Qgfxg6aBCKrq8PaHBVXVeT5o4gynzRCohoQ1Pn05q6W1y81f83dwV9D4XlJipHhVlhLUwWGwsGsfPDyICveXIeon+x8z1q0mrGnuDWzE0+JOcdU+rv9Ea2HR+HxzkIwbX74FTVWG5u0f1PlU0Bw10=
+after_success:
+- codecov
