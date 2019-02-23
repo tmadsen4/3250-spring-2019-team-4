@@ -100,14 +100,12 @@ class JavaClassFile:
         self.classfile_constant_table = constant_table
         return constant_table
 
-    def get_constant_table_size(self):
-        return self.classfile_constant_table_size
-
     # Following methods require the cpsize, which is returned with the constant table, might want a
     # separate constant later instead of calling the get_constant_table method for performance reasons
 
     # The access flags are "put together" [e.g ACC_PUBLIC and ACC_SUPER is 0x0021]
-    def get_access_flag(self, cpsize):
+    def get_access_flag(self):
+        cpsize = self.classfile_constant_table_size
         access_flag_byte1 = 10 + cpsize
         access_flag_byte2 = 11 + cpsize
 
@@ -117,7 +115,7 @@ class JavaClassFile:
 
     def get_class_identifier(self):
         constant_table = self.classfile_constant_table
-        cpsize = self.get_constant_table_size()
+        cpsize = self.classfile_constant_table_size
 
         class_index_byte1 = 12 + cpsize
         class_index_byte2 = 13 + cpsize
@@ -132,7 +130,7 @@ class JavaClassFile:
 
     def get_superclass_identifier(self):
         constant_table = self.get_constant_table()
-        cpsize = self.get_constant_table_size()
+        cpsize = self.classfile_constant_table_size
 
         superclass_index_byte1 = 14 + cpsize
         superclass_index_byte2 = 15 + cpsize
@@ -148,7 +146,8 @@ class JavaClassFile:
 
         return superclass_identifier
 
-    def get_interface_count(self, cpsize):
+    def get_interface_count(self):
+        cpsize = self.classfile_constant_table_size
         count_index_byte1 = 16 + cpsize
         count_index_byte2 = 17 + cpsize
 
@@ -157,8 +156,9 @@ class JavaClassFile:
 
         return interface_count
 
-    def get_interface_table(self, cpsize):
-        interface_count = int(self.get_interface_count(cpsize), 16)
+    def get_interface_table(self):
+        cpsize = self.classfile_constant_table_size
+        interface_count = int(self.get_interface_count(), 16)
         byte_location = 18 + cpsize
         interface_table = []
         size = 0
@@ -177,8 +177,8 @@ class JavaClassFile:
         return interface_table
 
     def get_interfaces(self):
-        interface_count = int(self.get_interface_count(self.get_constant_table_size()), 16)
-        interface_table = self.get_interface_table(self.get_constant_table_size())
+        interface_count = int(self.get_interface_count(), 16)
+        interface_table = self.get_interface_table()
         constant_table = self.classfile_constant_table
 
         if interface_count == 0:
@@ -190,6 +190,18 @@ class JavaClassFile:
 
         return interfaces
 
+    def get_interface_table_size(self):
+        return self.classfile_interface_table_size
+
+    def get_field_count(self):
+        cpsize = self.classfile_constant_table_size
+        count_index_byte1 = 18 + cpsize
+        count_index_byte2 = 19 + cpsize
+
+        interface_count = (format(self.data[count_index_byte1], "02X") +
+                           format(self.data[count_index_byte2], "02X"))
+
+        return interface_count
 
 
 
@@ -205,7 +217,7 @@ class JavaClassFile:
         print("Pool Count - 1: " + self.get_pool_count())
         print("Constant Table: " + str(self.classfile_constant_table))
         print("Constant Table Size: ")
-        print("Access Flag: " + self.get_access_flag(self.get_constant_table_size()))
+        print("Access Flag: " + self.get_access_flag())
         print("Class Identifier: " + self.get_class_identifier())
         print("Super Class Identifier: " + self.get_superclass_identifier())
         print("Interface Count: " + str(self.classfile_interface_table_size))
@@ -223,7 +235,7 @@ class JavaClassFile:
             self.data = class_file.read()
 
         self.get_constant_table()
-        self.get_interface_table(self.classfile_constant_table_size)
+        self.get_interface_table()
 
 
 # -----END OF METHOD DEFINITIONS-----
