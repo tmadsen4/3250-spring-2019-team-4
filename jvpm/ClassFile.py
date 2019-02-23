@@ -10,8 +10,6 @@ class JavaClassFile:
     classfile_field_table = []
     classfile_field_table_size = -1
 
-    # Python "Constructor"
-
     def get_magic_number(self):
         magic_num = ""
 
@@ -207,7 +205,6 @@ class JavaClassFile:
                        format(self.data[field_count_index_byte2], "02X"))
         return field_count
 
-
     def get_field_table(self):
         field_count = int(self.get_field_count(), 16)
         cpsize = self.classfile_constant_table_size
@@ -229,6 +226,9 @@ class JavaClassFile:
 
         return field_table
 
+    def get_fields(self):
+        print("TODO")
+
     # For Testing
 
     def print_data(self):
@@ -247,7 +247,9 @@ class JavaClassFile:
         print("Interfaces: " + str(self.get_interfaces()))
         print("Field Count: " + self.get_field_count())
         print("Field Table: " + str(self.get_field_table()))
+        print("Fields: ")
 
+    # Python "Constructor"
     def __init__(self):
         # TODO: Make it so that the .class file can be specified by name, this could help in testing opcode reading
 
