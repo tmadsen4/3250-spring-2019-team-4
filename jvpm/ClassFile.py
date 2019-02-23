@@ -140,10 +140,11 @@ class JavaClassFile:
         superclass_index = (format(self.data[superclass_index_byte1], "02X") +
                             format(self.data[superclass_index_byte2], "02X"))
         superclass_index = int(superclass_index, 16)
+
         if superclass_index == 0:
             superclass_identifier = "None"
         else:
-            superclass_identifier = constant_table[0][superclass_index]
+            superclass_identifier = constant_table[superclass_index]
 
         return superclass_identifier
 
