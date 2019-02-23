@@ -303,7 +303,7 @@ class JavaClassFile:
                             attribute += format(self.data[byte_location], "02X")
                             byte_location += 1
                             size += 1
-                        method_table_element += format(self.data[byte_location], "02X")
+                        method_table_element += attribute
                         byte_location += 1
                         size += 1
                     print(method_table_element)
