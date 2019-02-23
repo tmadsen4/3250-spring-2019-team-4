@@ -4,6 +4,9 @@ from jvpm.ConstantPoolTag import *
 class JavaClassFile:
     classfile_oonstant_table = []
     classfile_constant_table_size = -1
+    classfile_interface_table = []
+    classfile_interface_table_size = -1
+    classfile_interfaces = []
 
     # Python "Constructor"
 
@@ -157,15 +160,38 @@ class JavaClassFile:
         interface_count = int(self.get_interface_count(cpsize), 16)
         byte_location = 18 + cpsize
         interface_table = []
+        size = 0
 
         for i in range(interface_count):
-            interface_table.append(self.data[byte_location])
+            interface_index = ""
+            interface_index += format(self.data[byte_location], "02X")
             byte_location += 1
+            interface_index += format(self.data[byte_location], "02X")
+            byte_location += 1
+            interface_table.append(interface_index)
+            size += 2
 
+        self.classfile_interface_table = interface_table
+        self.classfile_interface_table_size = size
         return interface_table
 
     def get_interfaces(self):
-        interface_table = self.get_interface_table()
+        interface_count = int(self.get_interface_count(self.get_constant_table_size()), 16)
+        interface_table = self.get_interface_table(self.get_constant_table_size())
+        constant_table = self.classfile_constant_table
+
+        if interface_count == 0:
+            return []
+        else:
+            interfaces = []
+            for i in range(len(interface_table)):
+                interfaces.append(constant_table[int(interface_table[i], 16)])
+
+        return interfaces
+
+
+
+
 
 
     # For Testing
@@ -176,14 +202,14 @@ class JavaClassFile:
         print("Minor Version: " + self.get_minor())
         print("Pool Count: " + self.get_pool_count_raw())
         print("Pool Count - 1: " + self.get_pool_count())
-        print("Constant Table: " + str(self.get_constant_table()))
+        print("Constant Table: " + str(self.classfile_constant_table))
         print("Constant Table Size: ")
         print("Access Flag: " + self.get_access_flag(self.get_constant_table_size()))
         print("Class Identifier: " + self.get_class_identifier())
         print("Super Class Identifier: " + self.get_superclass_identifier())
-        print("Interface Count: " + self.get_interface_count(self.get_constant_table_size()))
-        print("Interface Table: " + str(self.get_interface_table(self.get_constant_table_size())))
-
+        print("Interface Count: " + str(self.classfile_interface_table_size))
+        print("Interface Table: " + str(self.classfile_interface_table))
+        print("Interfaces: " + str(self.get_interfaces()))
 
     def __init__(self):
         # TODO: Make it so that the .class file can be specified by name, this could help in testing opcode reading
@@ -194,6 +220,10 @@ class JavaClassFile:
             # Literally sets the object of this class to whatever is on the other side of the equals sign
             # For example with object a of class x and self.data = 0 in constructor, print(a.data) would print 0
             self.data = class_file.read()
+
+        self.get_constant_table()
+        self.get_interface_table(self.classfile_constant_table_size)
+
 
 # -----END OF METHOD DEFINITIONS-----
 a = JavaClassFile()
