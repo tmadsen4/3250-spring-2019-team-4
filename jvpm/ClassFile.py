@@ -2,6 +2,7 @@ from jvpm.ConstantPoolTag import *
 
 
 class JavaClassFile:
+    stack_z = []
 
     # Python "Constructor"
     def __init__(self):
