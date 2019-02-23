@@ -9,6 +9,10 @@ class JavaClassFile:
     classfile_interfaces = []
     classfile_field_table = []
     classfile_field_table_size = -1
+    classfile_fields = []
+    classfile_method_table = []
+    classfile_method_table_size = -1
+    classfile_methods = []
 
     def get_magic_number(self):
         magic_num = ""
@@ -130,7 +134,7 @@ class JavaClassFile:
         return class_identifier
 
     def get_superclass_identifier(self):
-        constant_table = self.get_constant_table()
+        constant_table = self.classfile_constant_table
         cpsize = self.classfile_constant_table_size
 
         superclass_index_byte1 = 14 + cpsize
@@ -179,8 +183,9 @@ class JavaClassFile:
 
     def get_interfaces(self):
         interface_count = int(self.get_interface_count(), 16)
-        interface_table = self.get_interface_table()
+        interface_table = self.classfile_interface_table
         constant_table = self.classfile_constant_table
+        interfaces = []
 
         if interface_count == 0:
             return []
@@ -190,9 +195,6 @@ class JavaClassFile:
                 interfaces.append(constant_table[int(interface_table[i], 16)])
 
         return interfaces
-
-    def get_interface_table_size(self):
-        return self.classfile_interface_table_size
 
     def get_field_count(self):
         cpsize = self.classfile_constant_table_size
@@ -209,25 +211,127 @@ class JavaClassFile:
         field_count = int(self.get_field_count(), 16)
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
+        size = 0
+        field_table = []
 
         byte_location = 20 + cpsize + isize
-
         if field_count == 0:
-
+            self.classfile_field_table = field_table
+            self.classfile_field_table_size = size
             return []
         else:
-            field_table = []
+            # TODO FIX THIS
             for i in range(field_count):
                 field_table_element = ""
-                for j in range(8):
+                for j in range(8):  # Field_info consists of 8 bytes (4x u2)
                     field_table_element += format(self.data[byte_location], "02X")
                     byte_location += 1
+                    size += 1
+                attribute_size = int(field_table_element[15:], 16)
+                if attribute_size != 0:
+                    for j in range(attribute_size):
+                        field_table_element += format(self.data[byte_location], "02X")
+                        byte_location += 1
+                        size += 1
+
                 field_table.append(field_table_element)
+
+        self.classfile_field_table = field_table
+        self.classfile_field_table_size = size
 
         return field_table
 
     def get_fields(self):
-        print("TODO")
+        # TODO
+        constant_table = self.classfile_constant_table
+        field_table = self.classfile_field_table
+        fields = []
+        for i in range(len(field_table)):
+            attribute_size = int(field_table[i][15:], 16)
+            if attribute_size > 0:
+                name_index = int(field_table[i][4:7], 16)  # Bytes 2 and 3
+                descriptor_index = int(field_table[i][8:12], 16)  # Bytes 4 and 5
+
+            fields.append(format(constant_table[name_index], "02X") + format(constant_table[descriptor_index], "02X"))
+        self.classfile_fields = fields
+
+        return fields
+
+    # Returns number of methods + the <init> system method, or n + 1
+    def get_method_count(self):
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+
+        method_count_byte1 = 20 + cpsize + isize + fsize
+        method_count_byte2 = 21 + cpsize + isize + fsize
+        method_count = (format(self.data[method_count_byte1], "02X") +
+                        format(self.data[method_count_byte2], "02X"))
+
+        return method_count
+
+    def get_method_table(self):
+        method_count = int(self.get_method_count(), 16)
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+        size = 0
+        method_table = []
+
+        byte_location = 22 + cpsize + isize + fsize
+
+        if method_count == 0:
+            self.classfile_method_table = method_table
+            self.classfile_method_table_size = size
+            return method_table
+        else:
+            # TODO FIX THIS
+            for i in range(method_count):
+                method_table_element = ""
+                for j in range(8):  # Method_info consists of 8 bytes (4x u2)
+                    method_table_element += format(self.data[byte_location], "02X")
+                    byte_location += 1
+                    size += 1
+                print(method_table_element)
+                attribute_size = int(method_table_element[15:], 16)
+
+                print("Attribute Size: " + str(attribute_size))
+                if attribute_size != 0:
+                    for j in range(attribute_size):
+                        attribute = ""
+                        for k in range(7):
+                            attribute += format(self.data[byte_location], "02X")
+                            byte_location += 1
+                            size += 1
+                        method_table_element += format(self.data[byte_location], "02X")
+                        byte_location += 1
+                        size += 1
+                    print(method_table_element)
+
+                method_table.append(method_table_element)
+        self.classfile_method_table = method_table
+        return method_table
+
+    def get_methods(self):
+        # TODO
+        constant_table = self.classfile_constant_table
+        method_table = self.classfile_method_table
+        methods = []
+        for i in range(len(method_table)):
+            attribute_size = int(method_table[i][15:16], 16)
+            if attribute_size > 0:
+                name_index = int(method_table[i][4:7], 16)  # Bytes 2 and 3
+                descriptor_index = int(method_table[i][8:12], 16)  # Bytes 4 and 5'
+
+                methods.append(
+                    ("Name: " + constant_table[name_index] + " Descriptor: " + constant_table[descriptor_index]) +
+                " Attribute: " + "")
+            else:
+                print("")
+
+        self.classfile_methods = methods
+        return methods
+
 
     # For Testing
 
@@ -238,16 +342,19 @@ class JavaClassFile:
         print("Pool Count: " + self.get_pool_count_raw())
         print("Pool Count - 1: " + self.get_pool_count())
         print("Constant Table: " + str(self.classfile_constant_table))
-        print("Constant Table Size: ")
+        print("Constant Table Size: " + str(self.classfile_constant_table_size))
         print("Access Flag: " + self.get_access_flag())
         print("Class Identifier: " + self.get_class_identifier())
         print("Super Class Identifier: " + self.get_superclass_identifier())
         print("Interface Count: " + str(self.classfile_interface_table_size))
         print("Interface Table: " + str(self.classfile_interface_table))
         print("Interfaces: " + str(self.get_interfaces()))
-        print("Field Count: " + self.get_field_count())
-        print("Field Table: " + str(self.get_field_table()))
-        print("Fields: ")
+        print("Field Count: " + str(self.classfile_field_table_size))
+        print("Field Table: " + str(self.classfile_field_table))
+        print("Fields: " + str(self.classfile_fields))
+        print("Method Count: " + self.get_method_count())
+        print("Method Table: " + str(self.classfile_method_table))
+        print("Methods: " + str(self.classfile_methods))
 
     # Python "Constructor"
     def __init__(self):
@@ -262,6 +369,11 @@ class JavaClassFile:
 
         self.get_constant_table()
         self.get_interface_table()
+        self.get_interfaces()
+        self.get_field_table()
+        self.get_fields()
+        self.get_method_table()
+        self.get_methods()
 
 
 # -----END OF METHOD DEFINITIONS-----
