@@ -7,6 +7,8 @@ class JavaClassFile:
     classfile_interface_table = []
     classfile_interface_table_size = -1
     classfile_interfaces = []
+    classfile_field_table = []
+    classfile_field_table_size = -1
 
     # Python "Constructor"
 
@@ -113,6 +115,7 @@ class JavaClassFile:
                        format(self.data[access_flag_byte2], "02X"))
         return access_flag
 
+    # Assumes that the size of the class index is 2 bytes from 4.4.1 of the java.class documentation
     def get_class_identifier(self):
         constant_table = self.classfile_constant_table
         cpsize = self.classfile_constant_table_size
@@ -148,11 +151,11 @@ class JavaClassFile:
 
     def get_interface_count(self):
         cpsize = self.classfile_constant_table_size
-        count_index_byte1 = 16 + cpsize
-        count_index_byte2 = 17 + cpsize
+        interface_count_index_byte1 = 16 + cpsize
+        interface_count_index_byte2 = 17 + cpsize
 
-        interface_count = (format(self.data[count_index_byte1], "02X") +
-                           format(self.data[count_index_byte2], "02X"))
+        interface_count = (format(self.data[interface_count_index_byte1], "02X") +
+                           format(self.data[interface_count_index_byte2], "02X"))
 
         return interface_count
 
@@ -195,17 +198,36 @@ class JavaClassFile:
 
     def get_field_count(self):
         cpsize = self.classfile_constant_table_size
-        count_index_byte1 = 18 + cpsize
-        count_index_byte2 = 19 + cpsize
+        isize = self.classfile_interface_table_size
 
-        interface_count = (format(self.data[count_index_byte1], "02X") +
-                           format(self.data[count_index_byte2], "02X"))
+        field_count_index_byte1 = 18 + cpsize + isize
+        field_count_index_byte2 = 19 + cpsize + isize
 
-        return interface_count
+        field_count = (format(self.data[field_count_index_byte1], "02X") +
+                       format(self.data[field_count_index_byte2], "02X"))
+        return field_count
 
 
+    def get_field_table(self):
+        field_count = int(self.get_field_count(), 16)
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
 
+        byte_location = 20 + cpsize + isize
 
+        if field_count == 0:
+
+            return []
+        else:
+            field_table = []
+            for i in range(field_count):
+                field_table_element = ""
+                for j in range(8):
+                    field_table_element += format(self.data[byte_location], "02X")
+                    byte_location += 1
+                field_table.append(field_table_element)
+
+        return field_table
 
     # For Testing
 
@@ -223,6 +245,8 @@ class JavaClassFile:
         print("Interface Count: " + str(self.classfile_interface_table_size))
         print("Interface Table: " + str(self.classfile_interface_table))
         print("Interfaces: " + str(self.get_interfaces()))
+        print("Field Count: " + self.get_field_count())
+        print("Field Table: " + str(self.get_field_table()))
 
     def __init__(self):
         # TODO: Make it so that the .class file can be specified by name, this could help in testing opcode reading
