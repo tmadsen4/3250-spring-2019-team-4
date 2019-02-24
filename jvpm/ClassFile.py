@@ -220,17 +220,22 @@ class JavaClassFile:
             self.classfile_field_table_size = size
             return []
         else:
-            # TODO FIX THIS
             for i in range(field_count):
                 field_table_element = ""
-                for j in range(8):  # Field_info consists of 8 bytes (4x u2)
+                for j in range(8):  # field_info consists of 8 bytes (4x u2)
                     field_table_element += format(self.data[byte_location], "02X")
                     byte_location += 1
                     size += 1
+
                 attribute_size = int(field_table_element[15:], 16)
                 if attribute_size != 0:
                     for j in range(attribute_size):
-                        field_table_element += format(self.data[byte_location], "02X")
+                        attribute = ""
+                        for k in range(7):
+                            attribute += format(self.data[byte_location], "02X")
+                            byte_location += 1
+                            size += 1
+                        field_table_element += attribute
                         byte_location += 1
                         size += 1
 
@@ -246,14 +251,6 @@ class JavaClassFile:
         constant_table = self.classfile_constant_table
         field_table = self.classfile_field_table
         fields = []
-        for i in range(len(field_table)):
-            attribute_size = int(field_table[i][15:], 16)
-            if attribute_size > 0:
-                name_index = int(field_table[i][4:7], 16)  # Bytes 2 and 3
-                descriptor_index = int(field_table[i][8:12], 16)  # Bytes 4 and 5
-
-            fields.append(format(constant_table[name_index], "02X") + format(constant_table[descriptor_index], "02X"))
-        self.classfile_fields = fields
 
         return fields
 
@@ -285,19 +282,16 @@ class JavaClassFile:
             self.classfile_method_table_size = size
             return method_table
         else:
-            # TODO FIX THIS
             for i in range(method_count):
                 method_table_element = ""
                 for j in range(8):  # Method_info consists of 8 bytes (4x u2)
                     method_table_element += format(self.data[byte_location], "02X")
                     byte_location += 1
                     size += 1
-                print(method_table_element)
-                attribute_size = int(method_table_element[15:], 16)
 
-                print("Attribute Size: " + str(attribute_size))
-                if attribute_size != 0:
-                    for j in range(attribute_size):
+                attribute_count = int(method_table_element[15:], 16)
+                if attribute_count != 0:
+                    for j in range(attribute_count):
                         attribute = ""
                         for k in range(7):
                             attribute += format(self.data[byte_location], "02X")
@@ -306,7 +300,6 @@ class JavaClassFile:
                         method_table_element += attribute
                         byte_location += 1
                         size += 1
-                    print(method_table_element)
 
                 method_table.append(method_table_element)
         self.classfile_method_table = method_table
@@ -318,19 +311,28 @@ class JavaClassFile:
         method_table = self.classfile_method_table
         methods = []
         for i in range(len(method_table)):
-            attribute_size = int(method_table[i][15:16], 16)
-            if attribute_size > 0:
-                name_index = int(method_table[i][4:7], 16)  # Bytes 2 and 3
-                descriptor_index = int(method_table[i][8:12], 16)  # Bytes 4 and 5'
+            method_name_index = int(method_table[i][4:8], 16)
+            method_descriptor_index = int(method_table[i][8:12], 16)
+            method_name = constant_table[method_name_index]
+            method_descriptor = constant_table[method_descriptor_index]
 
-                methods.append(
-                    ("Name: " + constant_table[name_index] + " Descriptor: " + constant_table[descriptor_index]) +
-                " Attribute: " + "")
-            else:
-                print("")
+            method_attribute_count = int(method_table[i][12:16], 16)
+            method_attribute = method_table[i][16:(16 + (14 * method_attribute_count))]
+            for j in range(int(len(method_attribute) / 7)):
+                attribute = ""
+                attribute_name_index = int(method_attribute[0:4], 16)
+                attribute_length = int(method_attribute[4:12], 16)
+                attribute_info = str(method_attribute[12:14])
 
-        self.classfile_methods = methods
-        return methods
+                attribute_name = constant_table[attribute_name_index]
+                attribute += attribute_name
+
+            methods.append(("Name: " + method_name + " Descriptor: " + method_descriptor +
+                            "Attribute: " + attribute))
+
+
+
+
 
 
     # For Testing
