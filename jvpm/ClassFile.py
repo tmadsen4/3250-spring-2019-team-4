@@ -208,6 +208,7 @@ class JavaClassFile:
         return field_count
 
     def get_field_table(self):
+        # TODO FIX THIS AFTER GET_METHOD_TABLE
         field_count = int(self.get_field_count(), 16)
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
@@ -268,6 +269,16 @@ class JavaClassFile:
         return method_count
 
     def get_method_table(self):
+        # TODO FIX THIS
+        """
+        1st method_info: 0001000400050001
+        0001 = 1 a reasonable value for the attribute count
+
+        2nd method_info: 0001000000052AB7
+        2AB7 = 10,935 an impossible value for the attribute count considering the length of the file is 266 bytes
+
+        :return:
+        """
         method_count = int(self.get_method_count(), 16)
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
@@ -289,7 +300,7 @@ class JavaClassFile:
                     byte_location += 1
                     size += 1
 
-                attribute_count = int(method_table_element[15:], 16)
+                attribute_count = int(method_table_element[15:], 16)    # should be 12:16, 15: lets me run to test stuff
                 if attribute_count != 0:
                     for j in range(attribute_count):
                         attribute = ""
