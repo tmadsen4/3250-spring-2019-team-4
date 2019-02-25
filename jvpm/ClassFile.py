@@ -255,10 +255,33 @@ class JavaClassFile:
         return field_table
 
     def get_fields(self):
-        # TODO
         constant_table = self.classfile_constant_table
         field_table = self.classfile_field_table
         fields = []
+        for i in range(len(field_table)):
+            field_name_index = int(field_table[i][4:8], 16)
+            field_descriptor_index = int(field_table[i][8:12], 16)
+            field_name = constant_table[field_name_index]
+            field_descriptor = constant_table[field_descriptor_index]
+
+            field_attribute_count = int(field_table[i][12:16], 16)
+            attributes_raw = []
+            attributes = []
+
+            for j in range(field_attribute_count):
+                attribute = field_table[i][16:]
+                attributes_raw.append(attribute)
+            for j in range(len(attributes_raw)):
+                attribute_name_index = int(attributes_raw[j][0:4], 16)
+                attribute_name = constant_table[attribute_name_index]
+                attribute_length = attributes_raw[j][4:12]
+                attribute_info = attributes_raw[j][12:]
+                attributes.append(("Attribute Name: " + attribute_name + " Attribute Length: " + attribute_length) +
+                                  " Attribute Info: " + attribute_info)
+            fields.append(("Field Name: " + field_name + " Field Descriptor: " + field_descriptor +
+                           " Attributes: " + str(attributes)))
+            
+        self.classfile_methods = fields
 
         return fields
 
