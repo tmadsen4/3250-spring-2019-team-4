@@ -2,7 +2,7 @@ from jvpm.ConstantPoolTag import *
 
 
 class JavaClassFile:
-    classfile_oonstant_table = []
+    classfile_constant_table = []
     classfile_constant_table_size = -1
     classfile_interface_table = []
     classfile_interface_table_size = -1
@@ -283,6 +283,7 @@ class JavaClassFile:
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
         fsize = self.classfile_field_table_size
+
         size = 0
         method_table = []
 
@@ -299,19 +300,22 @@ class JavaClassFile:
                     method_table_element += format(self.data[byte_location], "02X")
                     byte_location += 1
                     size += 1
-
                 attribute_count = int(method_table_element[15:], 16)    # should be 12:16, 15: lets me run to test stuff
                 if attribute_count != 0:
                     for j in range(attribute_count):
                         attribute = ""
-                        for k in range(7):
+                        for k in range(6):
                             attribute += format(self.data[byte_location], "02X")
                             byte_location += 1
                             size += 1
                         method_table_element += attribute
                         byte_location += 1
                         size += 1
-
+                        
+                        size = int(attribute[4:12],16)-1     #attribute_length
+                        for n in range(size):                #simply added all the bytes related to the attribute length
+                            method_table_element += format(self.data[byte_location], "02X")
+                            byte_location += 1
                 method_table.append(method_table_element)
         self.classfile_method_table = method_table
         return method_table
