@@ -232,13 +232,20 @@ class JavaClassFile:
                 if attribute_size != 0:
                     for j in range(attribute_size):
                         attribute = ""
-                        for k in range(7):
+                        for k in range(6):
                             attribute += format(self.data[byte_location], "02X")
                             byte_location += 1
                             size += 1
                         field_table_element += attribute
-                        byte_location += 1
-                        size += 1
+
+                        attribute_info_length = int(attribute[4:12], 16)
+
+                        attribute_info = ""
+                        for k in range(attribute_info_length):
+                            attribute_info += format(self.data[byte_location], "02X")
+                            byte_location += 1
+                            size += 1
+                        field_table_element += attribute_info
 
                 field_table.append(field_table_element)
 
@@ -269,16 +276,6 @@ class JavaClassFile:
         return method_count
 
     def get_method_table(self):
-        # TODO FIX THIS
-        """
-        1st method_info: 0001000400050001
-        0001 = 1 a reasonable value for the attribute count
-
-        2nd method_info: 0001000000052AB7
-        2AB7 = 10,935 an impossible value for the attribute count considering the length of the file is 266 bytes
-
-        :return:
-        """
         method_count = int(self.get_method_count(), 16)
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
@@ -309,10 +306,8 @@ class JavaClassFile:
                             byte_location += 1
                             size += 1
                         method_table_element += attribute
-                        byte_location += 1
-                        size += 1
                         
-                        attribute_info_length = int(attribute[4:12], 16) - 1  # attribute_length
+                        attribute_info_length = int(attribute[4:12], 16)  # attribute_length
                         # simply added all the bytes related to the attribute length
                         attribute_info = ""
                         for k in range(attribute_info_length):
@@ -323,6 +318,7 @@ class JavaClassFile:
 
                 method_table.append(method_table_element)
         self.classfile_method_table = method_table
+        self.classfile_method_table_size = size
         return method_table
 
     def get_methods(self):
@@ -337,18 +333,26 @@ class JavaClassFile:
             method_descriptor = constant_table[method_descriptor_index]
 
             method_attribute_count = int(method_table[i][12:16], 16)
-            method_attribute = method_table[i][16:(16 + (14 * method_attribute_count))]
-            for j in range(int(len(method_attribute) / 7)):
-                attribute = ""
-                attribute_name_index = int(method_attribute[0:4], 16)
-                attribute_length = int(method_attribute[4:12], 16)
-                attribute_info = str(method_attribute[12:14])
+            attributes_raw = []
+            attributes = []
 
+            for j in range(method_attribute_count):
+                attribute = method_table[i][16:]
+                attributes_raw.append(attribute)
+            for j in range(len(attributes_raw)):
+                attribute_name_index = int(attributes_raw[j][0:4], 16)
                 attribute_name = constant_table[attribute_name_index]
-                attribute += attribute_name
+                attribute_length = attributes_raw[j][4:12]
+                attribute_info = attributes_raw[j][12:]
 
-            methods.append(("Name: " + method_name + " Descriptor: " + method_descriptor +
-                            "Attribute: " + attribute))
+                attributes.append(("Attribute Name: " + attribute_name + " Attribute Length: " + attribute_length) +
+                                  " Attribute Info: " + attribute_info)
+            methods.append(("Method Name: " + method_name + " Method Descriptor: " + method_descriptor +
+                            " Attributes: " + str(attributes)))
+        self.classfile_methods = methods
+
+        return methods
+
 
 
 
