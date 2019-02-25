@@ -15,6 +15,7 @@ class JavaClassFile:
     classfile_methods = []
     classfile_attribute_table = []
     classfile_attribute_table_size = -1
+    stack_z = []
 
     def get_magic_number(self):
         magic_num = ""
