@@ -13,6 +13,8 @@ class JavaClassFile:
     classfile_method_table = []
     classfile_method_table_size = -1
     classfile_methods = []
+    classfile_attribute_table = []
+    classfile_attribute_table_size = -1
 
     def get_magic_number(self):
         magic_num = ""
@@ -162,11 +164,12 @@ class JavaClassFile:
         return interface_count
 
     def get_interface_table(self):
-        cpsize = self.classfile_constant_table_size
         interface_count = int(self.get_interface_count(), 16)
-        byte_location = 18 + cpsize
+        cpsize = self.classfile_constant_table_size
         interface_table = []
         size = 0
+
+        byte_location = 18 + cpsize
 
         for i in range(interface_count):
             interface_index = ""
@@ -211,10 +214,11 @@ class JavaClassFile:
         field_count = int(self.get_field_count(), 16)
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
-        size = 0
         field_table = []
+        size = 0
 
         byte_location = 20 + cpsize + isize
+
         if field_count == 0:
             self.classfile_field_table = field_table
             self.classfile_field_table_size = size
@@ -302,9 +306,8 @@ class JavaClassFile:
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
         fsize = self.classfile_field_table_size
-
-        size = 0
         method_table = []
+        size = 0
 
         byte_location = 22 + cpsize + isize + fsize
 
@@ -388,6 +391,36 @@ class JavaClassFile:
 
         return attribute_count
 
+    def get_attribute_table(self):
+        attribute_count = int(self.get_attribute_count(), 16)
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+        msize = self.classfile_method_table_size
+        attribute_table = []
+        size = 0
+
+        byte_location = 24 + cpsize + isize + fsize + msize
+
+        for i in range(attribute_count):
+            attribute = ""
+            for j in range(6):
+                attribute += format(self.data[byte_location], "02X")
+                byte_location += 1
+                size += 1
+            attribute_info_length = int(attribute[4:12], 16)
+            for j in range(attribute_info_length):
+                attribute += format(self.data[byte_location], "02X")
+                byte_location += 1
+                size += 1
+            attribute_table.append(attribute)
+
+        self.classfile_attribute_table = attribute_table
+        self.classfile_attribute_table_size = size
+
+        return attribute_table
+
+
     # For Testing
 
     def print_data(self):
@@ -411,6 +444,7 @@ class JavaClassFile:
         print("Method Table: " + str(self.classfile_method_table))
         print("Methods: " + str(self.classfile_methods))
         print("Attribute Count: " + self.get_attribute_count())
+        print("Attribute Table: " + str(self.classfile_attribute_table))
 
     # Python "Constructor"
     def __init__(self):
@@ -430,6 +464,7 @@ class JavaClassFile:
         self.get_fields()
         self.get_method_table()
         self.get_methods()
+        self.get_attribute_table()
 
 
 # -----END OF METHOD DEFINITIONS-----
