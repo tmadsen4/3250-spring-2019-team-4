@@ -208,7 +208,6 @@ class JavaClassFile:
         return field_count
 
     def get_field_table(self):
-        # TODO FIX THIS AFTER GET_METHOD_TABLE
         field_count = int(self.get_field_count(), 16)
         cpsize = self.classfile_constant_table_size
         isize = self.classfile_interface_table_size
@@ -280,7 +279,7 @@ class JavaClassFile:
                                   " Attribute Info: " + attribute_info)
             fields.append(("Field Name: " + field_name + " Field Descriptor: " + field_descriptor +
                            " Attributes: " + str(attributes)))
-            
+
         self.classfile_methods = fields
 
         return fields
