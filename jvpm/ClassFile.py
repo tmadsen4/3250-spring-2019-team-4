@@ -374,6 +374,20 @@ class JavaClassFile:
 
         return methods
 
+    def get_attribute_count(self):
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+        msize = self.classfile_method_table_size
+
+        attribute_count_byte1 = 22 + cpsize + isize + fsize + msize
+        attribute_count_byte2 = 23 + cpsize + isize + fsize + msize
+
+        attribute_count = (format(self.data[attribute_count_byte1], "02X") +
+                           format(self.data[attribute_count_byte2], "02X"))
+
+        return attribute_count
+
     # For Testing
 
     def print_data(self):
@@ -396,6 +410,7 @@ class JavaClassFile:
         print("Method Count: " + self.get_method_count())
         print("Method Table: " + str(self.classfile_method_table))
         print("Methods: " + str(self.classfile_methods))
+        print("Attribute Count: " + self.get_attribute_count())
 
     # Python "Constructor"
     def __init__(self):
