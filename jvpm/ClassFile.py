@@ -300,7 +300,7 @@ class JavaClassFile:
                     method_table_element += format(self.data[byte_location], "02X")
                     byte_location += 1
                     size += 1
-                attribute_count = int(method_table_element[15:], 16)    # should be 12:16, 15: lets me run to test stuff
+                attribute_count = int(method_table_element[12:16], 16)
                 if attribute_count != 0:
                     for j in range(attribute_count):
                         attribute = ""
@@ -312,10 +312,15 @@ class JavaClassFile:
                         byte_location += 1
                         size += 1
                         
-                        size = int(attribute[4:12],16)-1     #attribute_length
-                        for n in range(size):                #simply added all the bytes related to the attribute length
-                            method_table_element += format(self.data[byte_location], "02X")
+                        attribute_info_length = int(attribute[4:12], 16) - 1  # attribute_length
+                        # simply added all the bytes related to the attribute length
+                        attribute_info = ""
+                        for k in range(attribute_info_length):
+                            attribute_info += format(self.data[byte_location], "02X")
                             byte_location += 1
+                            size += 1
+                        method_table_element += attribute_info
+
                 method_table.append(method_table_element)
         self.classfile_method_table = method_table
         return method_table
