@@ -322,7 +322,6 @@ class JavaClassFile:
         return method_table
 
     def get_methods(self):
-        # TODO
         constant_table = self.classfile_constant_table
         method_table = self.classfile_method_table
         methods = []
