@@ -374,12 +374,6 @@ class JavaClassFile:
 
         return methods
 
-
-
-
-
-
-
     # For Testing
 
     def print_data(self):
