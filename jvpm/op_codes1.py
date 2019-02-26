@@ -3,8 +3,14 @@ All Methods for OP Codes go in this file
 '''
 
 class op_codes:
-        def op_code70(x,y):
+        def op_code70(x,y):     #remainder
                 return x%y
+        
+        def op_code78(x,y):     #shift left   
+                return x<<y
+
+        def op_code80(x,y):     #bitwise OR
+                return x|y
 '''
 	def OP_code60(self, data):
                 var1 = data.pop() + data.pop()

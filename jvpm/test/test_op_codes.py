@@ -22,5 +22,9 @@ from jvpm import op_codes1
 class test_op_codes(unittest.TestCase):
     data = op_codes1.op_codes()
     
-    def test_op_code70(self):
+    def test_op_code70(self):# remainder
         self.assertEqual(op_codes1.op_codes.op_code70(11,2),1)
+    def test_op_code78(self):# shift left
+        self.assertEqual(op_codes1.op_codes.op_code78(1,2),4)
+    def test_op_code80(self):# bitwise OR
+        self.assertEqual(op_codes1.op_codes.op_code80(4,1),5)
