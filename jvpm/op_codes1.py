@@ -2,8 +2,8 @@
 All Methods for OP Codes go in this file
 '''
 
-class Op_codes:
-        def OP_code70(x,y):
+class op_codes:
+        def op_code70(x,y):
                 return x%y
 '''
 	def OP_code60(self, data):
