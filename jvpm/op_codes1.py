@@ -4,10 +4,10 @@ All Methods for OP Codes go in this file
 
 class Op_codes:
         def OP_code70(x,y):
-            return x%y
-
+                return x%y
+'''
 	def OP_code60(self, data):
-		var1 = data.pop() + data.pop()
+                var1 = data.pop() + data.pop()
 		push_to_stack(self, data, var1)
 
 	def OP_code7e(self, data):
@@ -27,4 +27,4 @@ class Op_codes:
 		push_to_stack(self, data, var1)
 
 	def push_to_stack(self, data, result):
-		data.push(result)
+		data.push(result) '''

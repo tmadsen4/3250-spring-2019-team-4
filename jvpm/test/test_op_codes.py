@@ -21,7 +21,6 @@ from jvpm import op_codes1
 
 class test_OP_codes(unittest.TestCase):
     data = op_codes1.Op_codes()
-    stack[3,2]
+    
     def test_OP_code70(self):
-        self.assetEqual(op_codes1.Op_code.OP_code70(stack.pop(),stack.pop(),1)
-
+        self.assertEqual(op_codes1.Op_codes.OP_code70(11,2),1)
