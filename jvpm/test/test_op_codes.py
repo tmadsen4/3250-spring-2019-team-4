@@ -1,9 +1,7 @@
 import unittest
 from jvpm import op_codes1
+        
 '''
-class test_OP_codes(unittest.TestCase):
-    op_codes1.Op_codes()
-    
    def test_OP_code60(self): 
        	self.assert_(self, stack_z != 0)
 
@@ -20,3 +18,10 @@ class test_OP_codes(unittest.TestCase):
         self.assert_(self, stack_z != 0)
 
     def test_push_to_stack(self):'''
+
+class test_OP_codes(unittest.TestCase):
+    data = op_codes1.Op_codes()
+    stack[3,2]
+    def test_OP_code70(self):
+        self.assetEqual(op_codes1.Op_code.OP_code70(stack.pop(),stack.pop(),1)
+

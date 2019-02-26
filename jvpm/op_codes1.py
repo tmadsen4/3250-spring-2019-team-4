@@ -3,6 +3,8 @@ All Methods for OP Codes go in this file
 '''
 
 class Op_codes:
+        def OP_code70(x,y):
+            return x%y
 
 	def OP_code60(self, data):
 		var1 = data.pop() + data.pop()
