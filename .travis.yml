@@ -11,7 +11,7 @@ script:
 - python -m unittest discover
 - coverage run -m unittest discover
 - coverage report --omit=*test*
-- cd $TRAVIS_BUILD_DIR
+- cd $TRAVIS_BUILD_DIR/project
 
 
 
