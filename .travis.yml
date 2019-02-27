@@ -6,10 +6,15 @@ cache: pip
 install:
 - pip install coverage
 - pip install codecov
+
 script:
 - python -m unittest discover
 - coverage run -m unittest discover
 - coverage report --omit=*test*
+- cd $TRAVIS_BUILD_DIR
+
+
+
 env:
   matrix:
   - CODECOV_TOKEN="aaa4075d-6496-44a9-baf9-ba8d86abf468"

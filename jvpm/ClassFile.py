@@ -456,8 +456,7 @@ class JavaClassFile:
         # Second parameter simply means "read binary"
         class_file_path = ".."
         class_file_name = "test.class"
-        class_file_directory = os.path.join(class_file_path, class_file_name)
-        class_file_directory = os.path.abspath(class_file_directory)
+        class_file_directory = os.path.abspath(os.path.join(class_file_path, class_file_name))
 
         with open(class_file_directory, 'rb') as class_file:
             # Literally sets the object of this class to whatever is on the other side of the equals sign
