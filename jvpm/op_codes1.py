@@ -28,23 +28,28 @@ class op_codes:
                 self.stack_z.append(5)
                 return 5
 
-	    def op_code60():
+	    def op_code60(stack_z):
                 var1 = data.pop() + data.pop()
                 stack_z.append(var1)
+                return stack_z
 
-	    def op_code7e():
+	    def op_code7e(stack_z):
 		        var1 = data.pop() & data.pop()
 		        stack_z.append(var1)
+                return stack_z
 
-	    def op_code6c(self, data):
+	    def op_code6c(stack_z):
 		        var1 = data.pop() / data.pop()
 		        stack_z.append(var1)
+                return stack_z
 
-	    def op_code68(self, data):
+	    def op_code68(stack_z):
 		        var1 = data.pop() * data.pop()
 		        stack_z.append(var1)
+                return stack_z
 
-	    def op_codes74(self, data):
+	    def op_codes74(stack_z):
 		        var1 = data.pop() * -1
 		        stack_z.append(var1)
+                return stack_z
 
