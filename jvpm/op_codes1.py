@@ -45,7 +45,7 @@ class op_codes:
                 return stack_z
 
         def op_code6c(stack_z): # integer division
-                var1 = stack_z.pop() / stack_z.pop()
+                var1 = stack_z.pop() // stack_z.pop()
                 stack_z.append(var1)
                 return stack_z
 
@@ -54,7 +54,7 @@ class op_codes:
                 stack_z.append(var1)
                 return stack_z
 
-        def op_codes74(stack_z): # change to negative
+        def op_code74(stack_z): # change to negative
                 var1 = stack_z.pop() * -1
                 stack_z.append(var1)
                 return stack_z
