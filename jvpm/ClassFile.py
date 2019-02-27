@@ -454,11 +454,11 @@ class JavaClassFile:
 
         # "with" operator deals with closing the input stream and also handles some exceptions
         # Second parameter simply means "read binary"
-        class_file_path = ".."
+        class_file_path = ""
         class_file_name = "test.class"
-        class_file_directory = os.path.abspath(os.path.join(class_file_path, class_file_name))
+        # class_file_directory = os.path.abspath(os.path.join(class_file_path, class_file_name))
 
-        with open(class_file_directory, 'rb') as class_file:
+        with open(class_file_name, 'rb') as class_file:
             # Literally sets the object of this class to whatever is on the other side of the equals sign
             # For example with object a of class x and self.data = 0 in constructor, print(a.data) would print 0
             self.data = class_file.read()
