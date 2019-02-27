@@ -59,3 +59,14 @@ class op_codes:
                 stack_z.append(var1)
                 return stack_z
 
+        def op_code02(stack_z): # loads -1 into the stack
+                stack_z.append(-1)
+                return stack_z
+
+        def op_code03(stack_z): # loads 0 into the stack
+                stack_z.append(0)
+                return stack_z
+
+        def op_code04(stack_z): # loads 1 into the stack
+                stack_z.append(1)
+                return stack_z
