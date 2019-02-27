@@ -422,7 +422,7 @@ class JavaClassFile:
 
         return attribute_table
 '''
-    def op_code_caller(self):
+    def op_code_caller(self, input):
         op_code_dict = {
             "0x60":op_codes1.op_codes.op_code60
             "0x7e":op_codes1.op_codes.op_code7e
@@ -445,7 +445,7 @@ class JavaClassFile:
             "0x82":op_codes1.op_codes.op_code82
         }
         
-        
+        send(op_code_dict[input](stack_z))
 
 '''
     # For Testing
