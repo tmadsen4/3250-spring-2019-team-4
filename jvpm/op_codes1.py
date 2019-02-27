@@ -18,7 +18,7 @@ class op_codes:
                 stack_z.append(var1)
                 return stack_z
 
-        def op_code05(stack_z):        #loads 2 onto stack
+        def op_code05(stack_z):         #loads 2 onto stack
                 stack_z.append(2)
                 return stack_z
 
