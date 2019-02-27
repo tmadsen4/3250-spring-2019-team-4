@@ -421,30 +421,33 @@ class JavaClassFile:
         self.classfile_attribute_table_size = size
 
         return attribute_table
-
+'''
     def op_code_caller(self):
         op_code_dict = {
-            "60":op_code60
-            "7e":op_code7e
-            "02":op_code02
-            "03":op_code03
-            "04":op_code04
-            "05":op_code05
-            "06":op_code06
-            "07":op_code07
-            "08":op_code08
-            "6C":op_code6c
-            "68":op_code68
-            "70":op_code70
-            "74":op_code74
-            "78":op_code78
-            "7A":op_code7a
-            "7C":op_code7c
-            "80":op_code80
-            "64":op_code64
-            "82":op_code82
+            "0x60":op_codes1.op_codes.op_code60
+            "0x7e":op_codes1.op_codes.op_code7e
+            "0x02":op_codes1.op_codes.op_code02
+            "0x03":op_codes1.op_codes.op_code03
+            "0x04":op_codes1.op_codes.op_code04
+            "0x05"op_codes1.op_codes.:op_code05
+            "0x06":op_codes1.op_codes.op_code06
+            "0x07":op_codes1.op_codes.op_code07
+            "0x08":op_codes1.op_codes.op_code08
+            "0x6C":op_codes1.op_codes.op_code6c
+            "0x68":op_codes1.op_codes.op_code68
+            "0x70":op_codes1.op_codes.op_code70
+            "0x74":op_codes1.op_codes.op_code74
+            "0x78":op_codes1.op_codes.op_code78
+            "0x7A":op_codes1.op_codes.op_code7a
+            "0x7C":op_codes1.op_codes.op_code7c
+            "0x80":op_codes1.op_codes.op_code80
+            "0x64":op_codes1.op_codes.op_code64
+            "0x82":op_codes1.op_codes.op_code82
         }
+        
+        
 
+'''
     # For Testing
 
     def print_data(self):
