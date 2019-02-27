@@ -48,8 +48,8 @@ class op_codes:
                 stack_z.append(var1)
                 return stack_z
 
-	    def op_codes74(stack_z): # change to negative
-		        var1 = stack_z.pop() * -1
-		        stack_z.append(var1)
+        def op_codes74(stack_z): # change to negative
+                var1 = stack_z.pop() * -1
+                stack_z.append(var1)
                 return stack_z
 
