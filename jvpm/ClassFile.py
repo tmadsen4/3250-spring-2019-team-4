@@ -422,6 +422,28 @@ class JavaClassFile:
 
         return attribute_table
 
+    def op_code_caller(self):
+        op_code_dict = {
+            "60":op_code60
+            "7e":op_code7e
+            "02":op_code02
+            "03":op_code03
+            "04":op_code04
+            "05":op_code05
+            "06":op_code06
+            "07":op_code07
+            "08":op_code08
+            "6C":op_code6c
+            "68":op_code68
+            "70":op_code70
+            "74":op_code74
+            "78":op_code78
+            "7A":op_code7a
+            "7C":op_code7c
+            "80":op_code80
+            "64":op_code64
+            "82":op_code82
+        }
 
     # For Testing
 
