@@ -13,6 +13,20 @@ test_stack = [1,2]
 
 class test_op_codes(unittest.TestCase):
 
+    def test_op_code70(self): # remainder
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code70(test_stack)
+        self.assertEqual(test_stack.pop() , 0)
+        
+    def test_op_code78(self): # shift left
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code78(test_stack)
+        self.assertEqual(test_stack.pop() , 4)
+
+    def test_op_code80(self): # bitwesi OR
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code80(test_stack)
+        self.assertEqual(test_stack.pop() , 3)
 
 
     def test_op_code60(self): # add
