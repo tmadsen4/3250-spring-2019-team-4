@@ -75,3 +75,18 @@ class test_op_codes(unittest.TestCase):
         test_stack = [1,2]
         test_stack = op_codes1.op_codes.op_code74(test_stack)
         self.assertEqual(test_stack.pop() , -1 * 2)
+
+    def test_opcode02(self): #load -1 onto stack
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code02(test_stack)
+        self.assertEqual(test_stack.pop(), -1)
+
+    def test_opcode03(self): #load 0 onto stack
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code03(test_stack)
+        self.assertEqual(test_stack.pop(), 0)
+
+    def test_opcode04(self): #load 1 onto stack
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code05(test_stack)
+        self.assertEqual(test_stack.pop(), 1)
