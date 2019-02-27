@@ -11,13 +11,35 @@ test_stack = [1,2]
     def test_op_code80(self):# bitwise OR
         self.assertEqual(op_codes1.op_codes.op_code80(4,1),5)'''
 
+
+
 class test_op_codes(unittest.TestCase):
+
+    def test_opcode05(self): #load 2 onto stack
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code05(test_stack)
+        self.assertEqual(test_stack.pop(), 2)
+
+    def test_opcode06(self): #load 3 onto stack
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code06(test_stack)
+        self.assertEqual(test_stack.pop(), 3)
+
+    def test_opcode07(self): #load 4 onto stack
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code07(test_stack)
+        self.assertEqual(test_stack.pop(), 4)
+
+    def test_opcode08(self): #load 5 onto stack
+        test_stack = [1,2]
+        test_stack = op_codes1.op_codes.op_code08(test_stack)
+        self.assertEqual(test_stack.pop(), 5)
 
     def test_op_code70(self): # remainder
         test_stack = [1,2]
         test_stack = op_codes1.op_codes.op_code70(test_stack)
         self.assertEqual(test_stack.pop() , 0)
-        
+
     def test_op_code78(self): # shift left
         test_stack = [1,2]
         test_stack = op_codes1.op_codes.op_code78(test_stack)
