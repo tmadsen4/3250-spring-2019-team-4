@@ -42,10 +42,10 @@ class op_codes:
                 var1 = stack_z.pop()
                 var2 = stack_z.pop()
 
-                if (var1 > MAX_JAVA_INT || var2 > MAX_JAVA_INT):
+                if (var1 > MAX_JAVA_INT or var2 > MAX_JAVA_INT):
                         var1 += var2
                         var1 += MIN_JAVA_INT
-                elif (var1 < MIN_JAVA_INT && var2 < MIN_JAVA_INT):
+                elif (var1 < MIN_JAVA_INT and var2 < MIN_JAVA_INT):
                         var1 += var2
                         var1 += MAX_JAVA_INT
 
