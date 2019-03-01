@@ -59,7 +59,14 @@ class op_codes:
                 return stack_z
 
         def op_code6c(stack_z): # integer division
-                var1 = stack_z.pop() // stack_z.pop()
+                var1 = stack_z.pop()
+                var2 = stack_z.pop()
+
+                if (var2 == 0):
+                        raise ArithmeticError("Dividing by zero")
+                else:
+                        var1 /= var2
+
                 stack_z.append(var1)
                 return stack_z
 
