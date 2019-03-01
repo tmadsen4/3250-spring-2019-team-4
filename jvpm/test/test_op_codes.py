@@ -74,7 +74,7 @@ class test_op_codes(unittest.TestCase):
     def test_op_code68(self): # multiplication
         test_stack = [1,2,2147483647,2147483647,2147483647,4,2147483647,5,-2147483647,-2147483647,-2147483647,4,-2147483647,5]
         test_stack = op_codes1.op_codes.op_code68(test_stack)
-        self.assertEqual(test_stack.pop(), -2147483647,)
+        self.assertEqual(test_stack.pop(), -2147483647)
         test_stack = op_codes1.op_codes.op_code68(test_stack)
         self.assertEqual(test_stack.pop(), 0)
         test_stack = op_codes1.op_codes.op_code68(test_stack)

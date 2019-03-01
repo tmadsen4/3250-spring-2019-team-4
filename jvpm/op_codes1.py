@@ -99,7 +99,11 @@ class op_codes:
                                 var1 = 0
                         else:
                                 var1 = MIN_JAVA_INT
-
+                elif (var2 == MIN_JAVA_INT):
+                        if ((var1 % 2) == 0):
+                                var1 = 0
+                        else:
+                                var1 = MIN_JAVA_INT
 
                 stack_z.append(var1)
                 return stack_z
