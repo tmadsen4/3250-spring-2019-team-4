@@ -4,9 +4,6 @@ All Methods for OP Codes go in this file
 
 class op_codes:
 
-        MAX_JAVA_INT = 2147483647
-        MIN_JAVA_INT = -2147483647
-
         def op_code70(stack_z):     #remainder
                 var1 = stack_z.pop() % stack_z.pop()
                 stack_z.append(var1)
@@ -39,6 +36,8 @@ class op_codes:
                 return stack_z
 
         def op_code60(stack_z): # add
+                MAX_JAVA_INT = 2147483647
+                MIN_JAVA_INT = -2147483647
                 var1 = stack_z.pop()
                 var2 = stack_z.pop()
 
