@@ -71,7 +71,36 @@ class op_codes:
                 return stack_z
 
         def op_code68(stack_z): # multiplication
-                var1 = stack_z.pop() * stack_z.pop()
+                MAX_JAVA_INT = 2147483647
+                MIN_JAVA_INT = -2147483647
+                var1 = stack_z.pop()
+                var2 = stack_z.pop()
+
+                if ((var1 == var2) and var1 == MAX_JAVA_INT):
+                        var1 = 1
+
+                elif ((var1 == var2) and var1 == MIN_JAVA_INT):
+                        var1 = 0
+
+                elif (var1 == MAX_JAVA_INT):
+                        if ((var2 % 2) != 0):
+                                var1 = var2 * -1
+                        else:
+                                var1 = MAX_JAVA_INT - (var2 - 1)
+
+                elif (var2 == MAX_JAVA_INT):
+                        if ((var1 % 2) != 0):
+                                var1 = var1 * -1
+                        else:
+                                var1 = MAX_JAVA_INT - (var1 - 1)
+
+                elif (var1 == MIN_JAVA_INT):
+                        if ((var2 % 2) == 0):
+                                var1 = 0
+                        else:
+                                var1 = MIN_JAVA_INT
+
+
                 stack_z.append(var1)
                 return stack_z
 
