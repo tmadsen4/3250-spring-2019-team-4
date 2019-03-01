@@ -67,8 +67,8 @@ class test_op_codes(unittest.TestCase):
 
     def test_op_code6c(self): # integer division
         test_stack = [1,2,2,0]
-        #test_stack = op_codes1.op_codes.op_code6c(test_stack)
         self.assertRaises(ArithmeticError, test_stack = op_codes1.op_codes.op_code6c(test_stack))
+        test_stack = op_codes1.op_codes.op_code6c(test_stack)
         self.assertEqual(test_stack.pop(), 2 // 1)
 
     def test_op_code68(self): # multiplication
