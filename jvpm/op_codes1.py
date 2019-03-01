@@ -47,6 +47,8 @@ class op_codes:
                 elif (var1 < MIN_JAVA_INT and var2 < MIN_JAVA_INT):
                         var1 += var2
                         var1 += MAX_JAVA_INT
+                else:
+                        var1 += var2
 
                 stack_z.append(var1)
                 return stack_z

@@ -55,8 +55,10 @@ class test_op_codes(unittest.TestCase):
         test_stack = [1,2,2147483647,2147483647,-2147483647,-2147483647]
         test_stack = op_codes1.op_codes.op_code60(test_stack)
         self.assertEqual(test_stack.pop(), -2147483647)
+        print(test_stack)
         test_stack = op_codes1.op_codes.op_code60(test_stack)
         self.assertEqual(test_stack.pop(), 2147483647)
+        print(test_stack)
         test_stack = op_codes1.op_codes.op_code60(test_stack)
         self.assertEqual(test_stack.pop(), 3)
 
