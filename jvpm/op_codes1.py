@@ -44,7 +44,7 @@ class op_codes:
                 if (var1 >= MAX_JAVA_INT or var2 >= MAX_JAVA_INT):
                         var1 += var2
                         var1 += MIN_JAVA_INT
-                elif (var1 =< MIN_JAVA_INT or var2 =< MIN_JAVA_INT):
+                elif (var1 <= MIN_JAVA_INT or var2 <= MIN_JAVA_INT):
                         var1 += var2
                         var1 += MAX_JAVA_INT
                 else:
