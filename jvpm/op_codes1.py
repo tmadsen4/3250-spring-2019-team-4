@@ -19,6 +19,16 @@ class op_codes:
                 stack_z.append(var1)
                 return stack_z
 
+        def op_code7c(stack_z):		#shift right
+                var1 = stack_z.pop() >> stack_z.pop()
+                stack_z.append(var1)
+                return stack_z
+
+        def op_code82(stack_z):		#bitwise XOR
+                var1 = stack_z.pop() ^ stack_z.pop()
+                stack_z.append(var1)
+                return stack_z
+
         def op_code05(stack_z):        #loads 2 onto stack
                 stack_z.append(2)
                 return stack_z
