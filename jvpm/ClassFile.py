@@ -448,13 +448,13 @@ class JavaClassFile:
         print("Attribute Table: " + str(self.classfile_attribute_table))
 
     # Python "Constructor"
-    def __init__(self):
+    def __init__(self, name):
         # TODO: Make it so that the .class file can be specified by name, this could help in testing opcode reading
 
         # "with" operator deals with closing the input stream and also handles some exceptions
         # Second parameter simply means "read binary"
         class_file_path = ""
-        class_file_name = "test.class"
+        class_file_name = name
         # class_file_directory = os.path.abspath(os.path.join(class_file_path, class_file_name))
 
         with open(class_file_name, 'rb') as class_file:
