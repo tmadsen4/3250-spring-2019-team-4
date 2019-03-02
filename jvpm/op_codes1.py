@@ -20,7 +20,8 @@ class op_codes:
                 return stack_z
 
         def op_code7c(stack_z):		#shift right
-                var1 = stack_z.pop() >> stack_z.pop()
+                var1 = stack_z.pop()
+                var1 = stack_z.pop() >> var1
                 stack_z.append(var1)
                 return stack_z
 
