@@ -473,8 +473,6 @@ class JavaClassFile:
 
 
 # -----END OF METHOD DEFINITIONS-----
-a = JavaClassFile()
-a.print_data()
 
 '''
     def op_code_caller(self, input):
