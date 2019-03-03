@@ -34,7 +34,6 @@ class op_codes:
                 stack.append(result)
 
 
-
         def op_code82(stack_z):		#bitwise XOR
                 var1 = stack_z.pop() ^ stack_z.pop()
                 stack_z.append(var1)
