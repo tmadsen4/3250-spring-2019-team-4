@@ -148,10 +148,10 @@ class JavaClassFile:
                             format(self.data[superclass_index_byte2], "02X"))
         superclass_index = int(superclass_index, 16)
 
-        if superclass_index == 0:
-            superclass_identifier = "None"
-        else:
+        if superclass_index != 0:
             superclass_identifier = constant_table[superclass_index]
+        else:
+            superclass_identifier = "None"
 
         return superclass_identifier
 
@@ -221,11 +221,7 @@ class JavaClassFile:
 
         byte_location = 20 + cpsize + isize
 
-        if field_count == 0:
-            self.classfile_field_table = field_table
-            self.classfile_field_table_size = size
-            return []
-        else:
+        if field_count != 0:
             for i in range(field_count):
                 field_table_element = ""
                 for j in range(8):  # field_info consists of 8 bytes (4x u2)
@@ -351,7 +347,7 @@ class JavaClassFile:
     def get_methods(self):
         constant_table = self.classfile_constant_table
         method_table = self.classfile_method_table
-        methods = []
+        methods = {}
         for i in range(len(method_table)):
             method_name_index = int(method_table[i][4:8], 16)
             method_descriptor_index = int(method_table[i][8:12], 16)
@@ -360,7 +356,7 @@ class JavaClassFile:
 
             method_attribute_count = int(method_table[i][12:16], 16)
             attributes_raw = []
-            attributes = []
+            attributes = {}
 
             for j in range(method_attribute_count):
                 attribute = method_table[i][16:]
@@ -371,10 +367,18 @@ class JavaClassFile:
                 attribute_length = attributes_raw[j][4:12]
                 attribute_info = attributes_raw[j][12:]
 
-                attributes.append(("Attribute Name: " + attribute_name + " Attribute Length: " + attribute_length) +
-                                  " Attribute Info: " + attribute_info)
-            methods.append(("Method Name: " + method_name + " Method Descriptor: " + method_descriptor +
-                            " Attributes: " + str(attributes)))
+                attribute_key = "Attribute " + str(j + 1)
+
+                attributes[attribute_key] = attribute_name
+                attributes[attribute_key + " Length"] = attribute_length
+                attributes[attribute_key + " Code"] = attribute_info
+
+            method_key = "Method " + str(i + 1)
+
+            methods[method_key] = method_name
+            methods[method_key + " Descriptor"] = method_descriptor
+            methods[method_key + " Attributes"] = attributes
+
         self.classfile_methods = methods
 
         return methods
@@ -422,9 +426,24 @@ class JavaClassFile:
 
         return attribute_table
 
+    def get_constant_table_size(self):
+        return self.classfile_constant_table_size
+
+    def get_interface_table_size(self):
+        return self.classfile_interface_table_size
+
+    def get_field_table_size(self):
+        return self.classfile_field_table_size
+
+    def get_method_table_size(self):
+        return self.classfile_method_table_size
+
+    def get_attribute_table_size(self):
+        return self.classfile_attribute_table_size
+
     # For Testing
 
-    def print_data(self):
+    def print_data(self):   # pragma: no cover
         print("Magic Number: " + self.get_magic_number())
         print("Major Version: " + self.get_major())
         print("Minor Version: " + self.get_minor())
@@ -435,26 +454,30 @@ class JavaClassFile:
         print("Access Flag: " + self.get_access_flag())
         print("Class Identifier: " + self.get_class_identifier())
         print("Super Class Identifier: " + self.get_superclass_identifier())
-        print("Interface Count: " + str(self.classfile_interface_table_size))
+        print("Interface Count: " + self.get_interface_count())
         print("Interface Table: " + str(self.classfile_interface_table))
+        print("Interface Table Size: " + str(self.classfile_interface_table_size))
         print("Interfaces: " + str(self.get_interfaces()))
-        print("Field Count: " + str(self.classfile_field_table_size))
+        print("Field Count: " + self.get_field_count())
         print("Field Table: " + str(self.classfile_field_table))
+        print("Field Table Size: " + str(self.classfile_field_table_size))
         print("Fields: " + str(self.classfile_fields))
         print("Method Count: " + self.get_method_count())
         print("Method Table: " + str(self.classfile_method_table))
+        print("Method Table Size: " + str(self.classfile_method_table_size))
         print("Methods: " + str(self.classfile_methods))
         print("Attribute Count: " + self.get_attribute_count())
         print("Attribute Table: " + str(self.classfile_attribute_table))
+        print("Attribute Table Size: " + str(self.classfile_attribute_table_size))
 
     # Python "Constructor"
-    def __init__(self, name):
+    def __init__(self, file_name):
         # TODO: Make it so that the .class file can be specified by name, this could help in testing opcode reading
 
         # "with" operator deals with closing the input stream and also handles some exceptions
         # Second parameter simply means "read binary"
         class_file_path = ""
-        class_file_name = name
+        class_file_name = file_name
         # class_file_directory = os.path.abspath(os.path.join(class_file_path, class_file_name))
 
         with open(class_file_name, 'rb') as class_file:
