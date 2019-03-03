@@ -50,9 +50,10 @@ class test_op_codes(unittest.TestCase):
         test_stack = op_codes1.op_codes.op_code7c(test_stack)
         self.assertEqual(test_stack.pop() , 5)
 
-    def test_op_code7a(self): # arithmetic shift right
-        test_stack = [15, 2]
-        op_codes1.op_codes.op_code7a(test_stack)
+    def test_op_code7a(self):  # arithmetic shift right
+        test_stack = [2, 15]
+        operator = op_codes1.op_codes()
+        operator.op_code7a(test_stack)
 
         self.assertEqual(test_stack.pop(), 3)
 
@@ -75,6 +76,13 @@ class test_op_codes(unittest.TestCase):
         self.assertEqual(test_stack.pop(), 2147483647)
         test_stack = op_codes1.op_codes.op_code60(test_stack)
         self.assertEqual(test_stack.pop(), 3)
+
+    def test_op_code_64(self):  # subtract
+        test_stack = [2, 3]
+        operator = op_codes1.op_codes()
+        operator.op_code64(test_stack)
+
+        self.assertEqual(test_stack.pop(), 1)
 
     def test_op_code7e(self): # bitwise AND
         test_stack = [1,2]
