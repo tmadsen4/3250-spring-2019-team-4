@@ -28,11 +28,10 @@ class op_codes:
         def op_code7a(self, stack):    # arithmetic shift right
                 # Assumes values put on the stack have already been converted to decimal integers
                 value = stack.pop()
-                shift_amount = stack.pop
+                shift_amount = stack.pop()
 
                 result = value >> shift_amount
                 stack.append(result)
-
 
 
         def op_code82(stack_z):		#bitwise XOR
@@ -79,6 +78,7 @@ class op_codes:
                 y = stack.pop()
 
                 result = x - y
+                stack.append(result)
 
         def op_code7e(stack_z): # bitwise and
                 var1 = stack_z.pop() & stack_z.pop()
