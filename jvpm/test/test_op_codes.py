@@ -1,21 +1,7 @@
 import unittest
 from jvpm import op_codes1
 
-test_stack = [1,2]
 
-<<<<<<< HEAD
-=======
-'''
-    def test_op_code70(self):# remainder
-        self.assertEqual(op_codes1.op_codes.op_code70(11,2),1)
-    def test_op_code78(self):# shift left
-        self.assertEqual(op_codes1.op_codes.op_code78(1,2),4)
-    def test_op_code80(self):# bitwise OR
-        self.assertEqual(op_codes1.op_codes.op_code80(4,1),5)'''
-
-
-
->>>>>>> 1893378985d71318b739773c06578f9a90e6fb82
 class test_op_codes(unittest.TestCase):
 
     def test_opcode05(self): #load 2 onto stack
@@ -64,7 +50,7 @@ class test_op_codes(unittest.TestCase):
         test_stack = [1,2]
         test_stack = op_codes1.op_codes.op_code82(test_stack)
         self.assertEqual(test_stack.pop() , 3)
-        
+
     def test_op_code80(self): # bitwise OR
         test_stack = [1,2]
         test_stack = op_codes1.op_codes.op_code80(test_stack)
