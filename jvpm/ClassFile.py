@@ -258,7 +258,7 @@ class JavaClassFile:
     def get_fields(self):
         constant_table = self.classfile_constant_table
         field_table = self.classfile_field_table
-        fields = []
+        fields = {}
         for i in range(len(field_table)):
             field_name_index = int(field_table[i][4:8], 16)
             field_descriptor_index = int(field_table[i][8:12], 16)
@@ -267,7 +267,7 @@ class JavaClassFile:
 
             field_attribute_count = int(field_table[i][12:16], 16)
             attributes_raw = []
-            attributes = []
+            attributes = {}
 
             for j in range(field_attribute_count):
                 attribute = field_table[i][16:]
@@ -277,12 +277,20 @@ class JavaClassFile:
                 attribute_name = constant_table[attribute_name_index]
                 attribute_length = attributes_raw[j][4:12]
                 attribute_info = attributes_raw[j][12:]
-                attributes.append(("Attribute Name: " + attribute_name + " Attribute Length: " + attribute_length) +
-                                  " Attribute Info: " + attribute_info)
-            fields.append(("Field Name: " + field_name + " Field Descriptor: " + field_descriptor +
-                           " Attributes: " + str(attributes)))
 
-        self.classfile_methods = fields
+                attribute_key = "Attribute " + str(j + 1)
+
+                attributes[attribute_key] = attribute_name
+                attributes[attribute_key + " Length"] = attribute_length
+                attributes[attribute_key + " Code"] = attribute_info
+
+            field_key = "Field " + str(i + 1)
+
+            fields[field_key] = field_name
+            fields[field_key + " Descriptor"] = field_descriptor
+            fields[field_key + " Attributes"] = attributes
+
+        self.classfile_fields = fields
 
         return fields
 
@@ -496,6 +504,8 @@ class JavaClassFile:
 
 
 # -----END OF METHOD DEFINITIONS-----
+a = JavaClassFile("test.class")
+a.print_data()
 
 '''
     def op_code_caller(self, input):
