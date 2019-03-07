@@ -148,10 +148,7 @@ class JavaClassFile:
                             format(self.data[superclass_index_byte2], "02X"))
         superclass_index = int(superclass_index, 16)
 
-        if superclass_index != 0:
-            superclass_identifier = constant_table[superclass_index]
-        else:
-            superclass_identifier = "None"
+        superclass_identifier = constant_table[superclass_index]
 
         return superclass_identifier
 
@@ -187,17 +184,12 @@ class JavaClassFile:
         return interface_table
 
     def get_interfaces(self):
-        interface_count = int(self.get_interface_count(), 16)
         interface_table = self.classfile_interface_table
         constant_table = self.classfile_constant_table
         interfaces = []
 
-        if interface_count == 0:
-            return []
-        else:
-            interfaces = []
-            for i in range(len(interface_table)):
-                interfaces.append(constant_table[int(interface_table[i], 16)])
+        for i in range(len(interface_table)):
+            interfaces.append(constant_table[int(interface_table[i], 16)])
 
         return interfaces
 
@@ -316,38 +308,33 @@ class JavaClassFile:
         size = 0
 
         byte_location = 22 + cpsize + isize + fsize
+        for i in range(method_count):
+            method_table_element = ""
+            for j in range(8):  # Method_info consists of 8 bytes (4x u2)
+                method_table_element += format(self.data[byte_location], "02X")
+                byte_location += 1
+                size += 1
+            attribute_count = int(method_table_element[12:16], 16)
+            if attribute_count != 0:
+                for j in range(attribute_count):
+                    attribute = ""
+                    for k in range(6):
+                        attribute += format(self.data[byte_location], "02X")
+                        byte_location += 1
+                        size += 1
+                    method_table_element += attribute
 
-        if method_count == 0:
-            self.classfile_method_table = method_table
-            self.classfile_method_table_size = size
-            return method_table
-        else:
-            for i in range(method_count):
-                method_table_element = ""
-                for j in range(8):  # Method_info consists of 8 bytes (4x u2)
-                    method_table_element += format(self.data[byte_location], "02X")
-                    byte_location += 1
-                    size += 1
-                attribute_count = int(method_table_element[12:16], 16)
-                if attribute_count != 0:
-                    for j in range(attribute_count):
-                        attribute = ""
-                        for k in range(6):
-                            attribute += format(self.data[byte_location], "02X")
-                            byte_location += 1
-                            size += 1
-                        method_table_element += attribute
-                        
-                        attribute_info_length = int(attribute[4:12], 16)  # attribute_length
-                        # simply added all the bytes related to the attribute length
-                        attribute_info = ""
-                        for k in range(attribute_info_length):
-                            attribute_info += format(self.data[byte_location], "02X")
-                            byte_location += 1
-                            size += 1
-                        method_table_element += attribute_info
+                    attribute_info_length = int(attribute[4:12], 16)  # attribute_length
+                    # simply added all the bytes related to the attribute length
+                    attribute_info = ""
+                    for k in range(attribute_info_length):
+                        attribute_info += format(self.data[byte_location], "02X")
+                        byte_location += 1
+                        size += 1
+                    method_table_element += attribute_info
 
-                method_table.append(method_table_element)
+            method_table.append(method_table_element)
+
         self.classfile_method_table = method_table
         self.classfile_method_table_size = size
         return method_table
