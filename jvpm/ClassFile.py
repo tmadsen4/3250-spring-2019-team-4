@@ -1,18 +1,22 @@
 from jvpm.ConstantPoolTag import *
+import os
 
 
 class JavaClassFile:
-
-    # Python "Constructor"
-    def __init__(self):
-        # TODO: Make it so that the .class file can be specified by name, this could help in testing opcode reading
-
-        # "with" operator deals with closing the input stream and also handles some exceptions
-        # Second parameter simply means "read binary"
-        with open("test.class", 'rb') as class_file:
-            # Literally sets the object of this class to whatever is on the other side of the equals sign
-            # For example with object a of class x and self.data = 0 in constructor, print(a.data) would print 0
-            self.data = class_file.read()
+    classfile_constant_table = []
+    classfile_constant_table_size = -1
+    classfile_interface_table = []
+    classfile_interface_table_size = -1
+    classfile_interfaces = []
+    classfile_field_table = []
+    classfile_field_table_size = -1
+    classfile_fields = []
+    classfile_method_table = []
+    classfile_method_table_size = -1
+    classfile_methods = []
+    classfile_attribute_table = []
+    classfile_attribute_table_size = -1
+    stack_z = []
 
     def get_magic_number(self):
         magic_num = ""
@@ -74,7 +78,7 @@ class JavaClassFile:
                 data_value += format(self.data[byte_location], "02X")
                 byte_location += 1
                 constant += data_value
-                size += 2
+                size += 3
                 # Get the offset for a string from the ConstantPoolTag Class
                 tag = ConstantPoolTag("01")
                 num_bytes = int(data_value, 16)
@@ -91,6 +95,7 @@ class JavaClassFile:
                 num_bytes = tag.get_byte_length(data_value)
                 constant += data_value
                 byte_location += 1
+                size += 1
                 for j in range(byte_location, byte_location + int(num_bytes)):
                     constant += format(self.data[j], "02X")
                     size += 1
@@ -99,17 +104,420 @@ class JavaClassFile:
                 constant = ""
                 byte_location += int(num_bytes)
 
-        return constant_table, size
+        self.classfile_constant_table_size = size
+        self.classfile_constant_table = constant_table
+        return constant_table
+
+    # Following methods require the cpsize, which is returned with the constant table, might want a
+    # separate constant later instead of calling the get_constant_table method for performance reasons
+
+    # The access flags are "put together" [e.g ACC_PUBLIC and ACC_SUPER is 0x0021]
+    def get_access_flag(self):
+        cpsize = self.classfile_constant_table_size
+        access_flag_byte1 = 10 + cpsize
+        access_flag_byte2 = 11 + cpsize
+
+        access_flag = (format(self.data[access_flag_byte1], "02X") +
+                       format(self.data[access_flag_byte2], "02X"))
+        return access_flag
+
+    # Assumes that the size of the class index is 2 bytes from 4.4.1 of the java.class documentation
+    def get_class_identifier(self):
+        constant_table = self.classfile_constant_table
+        cpsize = self.classfile_constant_table_size
+
+        class_index_byte1 = 12 + cpsize
+        class_index_byte2 = 13 + cpsize
+
+        class_index = (format(self.data[class_index_byte1], "02X") +
+                       format(self.data[class_index_byte2], "02X"))
+
+        class_index = int(class_index, 16)
+        class_identifier = constant_table[class_index]
+
+        return class_identifier
+
+    def get_superclass_identifier(self):
+        constant_table = self.classfile_constant_table
+        cpsize = self.classfile_constant_table_size
+
+        superclass_index_byte1 = 14 + cpsize
+        superclass_index_byte2 = 15 + cpsize
+        # Index of the constant pool table
+        superclass_index = (format(self.data[superclass_index_byte1], "02X") +
+                            format(self.data[superclass_index_byte2], "02X"))
+        superclass_index = int(superclass_index, 16)
+
+        superclass_identifier = constant_table[superclass_index]
+
+        return superclass_identifier
+
+    def get_interface_count(self):
+        cpsize = self.classfile_constant_table_size
+        interface_count_index_byte1 = 16 + cpsize
+        interface_count_index_byte2 = 17 + cpsize
+
+        interface_count = (format(self.data[interface_count_index_byte1], "02X") +
+                           format(self.data[interface_count_index_byte2], "02X"))
+
+        return interface_count
+
+    def get_interface_table(self):
+        interface_count = int(self.get_interface_count(), 16)
+        cpsize = self.classfile_constant_table_size
+        interface_table = []
+        size = 0
+
+        byte_location = 18 + cpsize
+
+        for i in range(interface_count):
+            interface_index = ""
+            interface_index += format(self.data[byte_location], "02X")
+            byte_location += 1
+            interface_index += format(self.data[byte_location], "02X")
+            byte_location += 1
+            interface_table.append(interface_index)
+            size += 2
+
+        self.classfile_interface_table = interface_table
+        self.classfile_interface_table_size = size
+        return interface_table
+
+    def get_interfaces(self):
+        interface_table = self.classfile_interface_table
+        constant_table = self.classfile_constant_table
+        interfaces = []
+
+        for i in range(len(interface_table)):
+            interfaces.append(constant_table[int(interface_table[i], 16)])
+
+        return interfaces
+
+    def get_field_count(self):
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+
+        field_count_index_byte1 = 18 + cpsize + isize
+        field_count_index_byte2 = 19 + cpsize + isize
+
+        field_count = (format(self.data[field_count_index_byte1], "02X") +
+                       format(self.data[field_count_index_byte2], "02X"))
+        return field_count
+
+    def get_field_table(self):
+        field_count = int(self.get_field_count(), 16)
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        field_table = []
+        size = 0
+
+        byte_location = 20 + cpsize + isize
+
+        if field_count != 0:
+            for i in range(field_count):
+                field_table_element = ""
+                for j in range(8):  # field_info consists of 8 bytes (4x u2)
+                    field_table_element += format(self.data[byte_location], "02X")
+                    byte_location += 1
+                    size += 1
+
+                attribute_size = int(field_table_element[15:], 16)
+                if attribute_size != 0:
+                    for j in range(attribute_size):
+                        attribute = ""
+                        for k in range(6):
+                            attribute += format(self.data[byte_location], "02X")
+                            byte_location += 1
+                            size += 1
+                        field_table_element += attribute
+
+                        attribute_info_length = int(attribute[4:12], 16)
+
+                        attribute_info = ""
+                        for k in range(attribute_info_length):
+                            attribute_info += format(self.data[byte_location], "02X")
+                            byte_location += 1
+                            size += 1
+                        field_table_element += attribute_info
+
+                field_table.append(field_table_element)
+
+        self.classfile_field_table = field_table
+        self.classfile_field_table_size = size
+
+        return field_table
+
+    def get_fields(self):
+        constant_table = self.classfile_constant_table
+        field_table = self.classfile_field_table
+        fields = {}
+        for i in range(len(field_table)):
+            field_name_index = int(field_table[i][4:8], 16)
+            field_descriptor_index = int(field_table[i][8:12], 16)
+            field_name = constant_table[field_name_index]
+            field_descriptor = constant_table[field_descriptor_index]
+
+            field_attribute_count = int(field_table[i][12:16], 16)
+            attributes_raw = []
+            attributes = {}
+
+            for j in range(field_attribute_count):
+                attribute = field_table[i][16:]
+                attributes_raw.append(attribute)
+            for j in range(len(attributes_raw)):
+                attribute_name_index = int(attributes_raw[j][0:4], 16)
+                attribute_name = constant_table[attribute_name_index]
+                attribute_length = attributes_raw[j][4:12]
+                attribute_info = attributes_raw[j][12:]
+
+                attribute_key = "Attribute " + str(j + 1)
+
+                attributes[attribute_key] = attribute_name
+                attributes[attribute_key + " Length"] = attribute_length
+                attributes[attribute_key + " Code"] = attribute_info
+
+            field_key = "Field " + str(i + 1)
+
+            fields[field_key] = field_name
+            fields[field_key + " Descriptor"] = field_descriptor
+            fields[field_key + " Attributes"] = attributes
+
+        self.classfile_fields = fields
+
+        return fields
+
+    # Returns number of methods + the <init> system method, or n + 1
+    def get_method_count(self):
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+
+        method_count_byte1 = 20 + cpsize + isize + fsize
+        method_count_byte2 = 21 + cpsize + isize + fsize
+        method_count = (format(self.data[method_count_byte1], "02X") +
+                        format(self.data[method_count_byte2], "02X"))
+
+        return method_count
+
+    def get_method_table(self):
+        method_count = int(self.get_method_count(), 16)
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+        method_table = []
+        size = 0
+
+        byte_location = 22 + cpsize + isize + fsize
+        for i in range(method_count):
+            method_table_element = ""
+            for j in range(8):  # Method_info consists of 8 bytes (4x u2)
+                method_table_element += format(self.data[byte_location], "02X")
+                byte_location += 1
+                size += 1
+            attribute_count = int(method_table_element[12:16], 16)
+            if attribute_count != 0:
+                for j in range(attribute_count):
+                    attribute = ""
+                    for k in range(6):
+                        attribute += format(self.data[byte_location], "02X")
+                        byte_location += 1
+                        size += 1
+                    method_table_element += attribute
+
+                    attribute_info_length = int(attribute[4:12], 16)  # attribute_length
+                    # simply added all the bytes related to the attribute length
+                    attribute_info = ""
+                    for k in range(attribute_info_length):
+                        attribute_info += format(self.data[byte_location], "02X")
+                        byte_location += 1
+                        size += 1
+                    method_table_element += attribute_info
+
+            method_table.append(method_table_element)
+
+        self.classfile_method_table = method_table
+        self.classfile_method_table_size = size
+        return method_table
+
+    def get_methods(self):
+        constant_table = self.classfile_constant_table
+        method_table = self.classfile_method_table
+        methods = {}
+        for i in range(len(method_table)):
+            method_name_index = int(method_table[i][4:8], 16)
+            method_descriptor_index = int(method_table[i][8:12], 16)
+            method_name = constant_table[method_name_index]
+            method_descriptor = constant_table[method_descriptor_index]
+
+            method_attribute_count = int(method_table[i][12:16], 16)
+            attributes_raw = []
+            attributes = {}
+
+            for j in range(method_attribute_count):
+                attribute = method_table[i][16:]
+                attributes_raw.append(attribute)
+            for j in range(len(attributes_raw)):
+                attribute_name_index = int(attributes_raw[j][0:4], 16)
+                attribute_name = constant_table[attribute_name_index]
+                attribute_length = attributes_raw[j][4:12]
+                attribute_info = attributes_raw[j][12:]
+
+                attribute_key = "Attribute " + str(j + 1)
+
+                attributes[attribute_key] = attribute_name
+                attributes[attribute_key + " Length"] = attribute_length
+                attributes[attribute_key + " Code"] = attribute_info
+
+            method_key = "Method " + str(i + 1)
+
+            methods[method_key] = method_name
+            methods[method_key + " Descriptor"] = method_descriptor
+            methods[method_key + " Attributes"] = attributes
+
+        self.classfile_methods = methods
+
+        return methods
+
+    def get_attribute_count(self):
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+        msize = self.classfile_method_table_size
+
+        attribute_count_byte1 = 22 + cpsize + isize + fsize + msize
+        attribute_count_byte2 = 23 + cpsize + isize + fsize + msize
+
+        attribute_count = (format(self.data[attribute_count_byte1], "02X") +
+                           format(self.data[attribute_count_byte2], "02X"))
+
+        return attribute_count
+
+    def get_attribute_table(self):
+        attribute_count = int(self.get_attribute_count(), 16)
+        cpsize = self.classfile_constant_table_size
+        isize = self.classfile_interface_table_size
+        fsize = self.classfile_field_table_size
+        msize = self.classfile_method_table_size
+        attribute_table = []
+        size = 0
+
+        byte_location = 24 + cpsize + isize + fsize + msize
+
+        for i in range(attribute_count):
+            attribute = ""
+            for j in range(6):
+                attribute += format(self.data[byte_location], "02X")
+                byte_location += 1
+                size += 1
+            attribute_info_length = int(attribute[4:12], 16)
+            for j in range(attribute_info_length):
+                attribute += format(self.data[byte_location], "02X")
+                byte_location += 1
+                size += 1
+            attribute_table.append(attribute)
+
+        self.classfile_attribute_table = attribute_table
+        self.classfile_attribute_table_size = size
+
+        return attribute_table
+
+    def get_constant_table_size(self):
+        return self.classfile_constant_table_size
+
+    def get_interface_table_size(self):
+        return self.classfile_interface_table_size
+
+    def get_field_table_size(self):
+        return self.classfile_field_table_size
+
+    def get_method_table_size(self):
+        return self.classfile_method_table_size
+
+    def get_attribute_table_size(self):
+        return self.classfile_attribute_table_size
+
     # For Testing
 
-    def print_data(self):
+    def print_data(self):   # pragma: no cover
         print("Magic Number: " + self.get_magic_number())
         print("Major Version: " + self.get_major())
         print("Minor Version: " + self.get_minor())
         print("Pool Count: " + self.get_pool_count_raw())
         print("Pool Count - 1: " + self.get_pool_count())
-        print("Constant Table: " + str(self.get_constant_table()))
+        print("Constant Table: " + str(self.classfile_constant_table))
+        print("Constant Table Size: " + str(self.classfile_constant_table_size))
+        print("Access Flag: " + self.get_access_flag())
+        print("Class Identifier: " + self.get_class_identifier())
+        print("Super Class Identifier: " + self.get_superclass_identifier())
+        print("Interface Count: " + self.get_interface_count())
+        print("Interface Table: " + str(self.classfile_interface_table))
+        print("Interface Table Size: " + str(self.classfile_interface_table_size))
+        print("Interfaces: " + str(self.get_interfaces()))
+        print("Field Count: " + self.get_field_count())
+        print("Field Table: " + str(self.classfile_field_table))
+        print("Field Table Size: " + str(self.classfile_field_table_size))
+        print("Fields: " + str(self.classfile_fields))
+        print("Method Count: " + self.get_method_count())
+        print("Method Table: " + str(self.classfile_method_table))
+        print("Method Table Size: " + str(self.classfile_method_table_size))
+        print("Methods: " + str(self.classfile_methods))
+        print("Attribute Count: " + self.get_attribute_count())
+        print("Attribute Table: " + str(self.classfile_attribute_table))
+        print("Attribute Table Size: " + str(self.classfile_attribute_table_size))
 
-a = JavaClassFile()
+    # Python "Constructor"
+    def __init__(self, file_name):
+        # TODO: Make it so that the .class file can be specified by name, this could help in testing opcode reading
+
+        # "with" operator deals with closing the input stream and also handles some exceptions
+        # Second parameter simply means "read binary"
+        class_file_path = ""
+        class_file_name = file_name
+        # class_file_directory = os.path.abspath(os.path.join(class_file_path, class_file_name))
+
+        with open(class_file_name, 'rb') as class_file:
+            # Literally sets the object of this class to whatever is on the other side of the equals sign
+            # For example with object a of class x and self.data = 0 in constructor, print(a.data) would print 0
+            self.data = class_file.read()
+
+        self.get_constant_table()
+        self.get_interface_table()
+        self.get_interfaces()
+        self.get_field_table()
+        self.get_fields()
+        self.get_method_table()
+        self.get_methods()
+        self.get_attribute_table()
+
+
+# -----END OF METHOD DEFINITIONS-----
+a = JavaClassFile("test.class")
 a.print_data()
 
+'''
+    def op_code_caller(self, input):
+        op_code_dict = {
+            "0x60":op_codes1.op_codes.op_code60
+            "0x7e":op_codes1.op_codes.op_code7e
+            "0x02":op_codes1.op_codes.op_code02
+            "0x03":op_codes1.op_codes.op_code03
+            "0x04":op_codes1.op_codes.op_code04
+            "0x05"op_codes1.op_codes.:op_code05
+            "0x06":op_codes1.op_codes.op_code06
+            "0x07":op_codes1.op_codes.op_code07
+            "0x08":op_codes1.op_codes.op_code08
+            "0x6C":op_codes1.op_codes.op_code6c
+            "0x68":op_codes1.op_codes.op_code68
+            "0x70":op_codes1.op_codes.op_code70
+            "0x74":op_codes1.op_codes.op_code74
+            "0x78":op_codes1.op_codes.op_code78
+            "0x7A":op_codes1.op_codes.op_code7a
+            "0x7C":op_codes1.op_codes.op_code7c
+            "0x80":op_codes1.op_codes.op_code80
+            "0x64":op_codes1.op_codes.op_code64
+            "0x82":op_codes1.op_codes.op_code82
+        }
+        
+        send(op_code_dict[input](stack_z))
+
+'''
