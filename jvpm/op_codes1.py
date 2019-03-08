@@ -153,15 +153,15 @@ class op_codes:
 
         def op_code91(stack_z):
                 var1 = stack_z.pop()
-                if (var1 >= 0):
-                        if ((var1 % 256) == 0):
+                if var1 >= 0:
+                        if (var1 % 256) == 0:
                                 stack_z.append(0)
                         else:
                                 var1 -= (256 * ((var1/256) + 1))
                                 stack_z.append(var1)
                 else:
-                        if ((var1 % 256) == 0):
+                        if (var1 % 256) == 0:
                                 stack_z.append(0)
                         else:
-                                var1 += (256 * ((var1/256) +1))
+                                var1 += (256 * ((var1/256) + 1))
                                 stack_z.append(var1)
