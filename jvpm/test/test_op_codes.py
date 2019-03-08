@@ -120,3 +120,26 @@ class test_op_codes(unittest.TestCase):
         test_stack = []
         test_stack = op_codes1.op_codes.op_code04(test_stack)
         self.assertEqual(test_stack.pop(), 1)
+
+    def test_opcode91(self): #convert int to byte
+        test_stack = [1, 2, 2147483647, -214748367, 500, -500, 256, -256, 768, 770]
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '2'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '0'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '0'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '0'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '12'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '-12'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '0'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '-1'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '2'.encode())
+        test_stack = op_codes1.op_codes.op_code91(test_stack)
+        self.assertEqual(test_stack.pop(), '1'.encode())

@@ -150,3 +150,18 @@ class op_codes:
         def op_code04(stack_z): # loads 1 into the stack
                 stack_z.append(1)
                 return stack_z
+
+        def op_code91(stack_z):
+                var1 = stack_z.pop()
+                if (var1 >= 0):
+                        if ((var1 % 256) == 0):
+                                stack_z.append(0)
+                        else:
+                                var1 -= (256 * ((var1/256) + 1))
+                                stack_z.append(var1)
+                else:
+                        if ((var1 % 256) == 0):
+                                stack_z.append(0)
+                        else:
+                                var1 += (256 * ((var1/256) +1))
+                                stack_z.append(var1)
