@@ -165,3 +165,4 @@ class op_codes:
                         else:
                                 var1 += (256 * ((var1/256) + 1))
                                 stack_z.append(var1)
+                return stack_z
