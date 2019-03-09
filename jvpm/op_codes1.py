@@ -155,14 +155,14 @@ class op_codes:
                 var1 = stack_z.pop()
                 if var1 >= 0:
                         if (var1 % 256) == 0:
-                                stack_z.append(bytes(0))
+                                stack_z.append(bytes([0]))
                         else:
                                 var1 -= (256 * (var1//256))
-                                stack_z.append(bytes(var1))
+                                stack_z.append(bytes([var1]))
                 else:
                         if (var1 % 256) == 0:
-                                stack_z.append(bytes(0))
+                                stack_z.append(bytes([0]))
                         else:
                                 var1 += (256 * (var1//256))
-                                stack_z.append(bytes(var1))
+                                stack_z.append(bytes([var1]))
                 return stack_z
