@@ -155,14 +155,14 @@ class op_codes:
                 var1 = stack_z.pop()
                 if var1 >= 0:
                         if (var1 % 256) == 0:
-                                stack_z.append(0)
+                                stack_z.append('0'.encode())
                         else:
                                 var1 -= (256 * (var1/256))
-                                stack_z.append(var1)
+                                stack_z.append(var1.encode())
                 else:
                         if (var1 % 256) == 0:
-                                stack_z.append(0)
+                                stack_z.append('0'.encode)
                         else:
                                 var1 += (256 * (var1/256))
-                                stack_z.append(var1)
+                                stack_z.append(var1.encode())
                 return stack_z
