@@ -164,5 +164,5 @@ class op_codes:
                                 stack_z.append(bytes([0]))
                         else:
                                 var1 += (256 * (var1//256))
-                                stack_z.append(bytes([var1]))
+                                stack_z.append(bytearray([256-var1]))
                 return stack_z
