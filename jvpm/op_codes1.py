@@ -209,3 +209,10 @@ class op_codes:
         def op_code1d(stack_z, varsarray):
                 stack_z.append(varsarray[3])
                 return stack_z
+
+        def op_code15(stack_z, varsarray, index):
+                if (index > len(varsarray)):
+                        raise IndexError
+                else:
+                        stack_z.append(varsarray[index])
+                        return stack_z
