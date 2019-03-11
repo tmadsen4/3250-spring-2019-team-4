@@ -124,7 +124,7 @@ class test_op_codes(unittest.TestCase):
     def test_opcode91(self): #convert int to byte
         test_stack = [1, 2, 2147483647, -214748367, 500, -500, 256, -256, 768, 770]
         test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([2]))
+        self.assertEqual(test_stack.pop(), bytes([254]))
         test_stack = op_codes1.op_codes.op_code91(test_stack)
         self.assertEqual(test_stack.pop(), bytes([0]))
         test_stack = op_codes1.op_codes.op_code91(test_stack)
@@ -134,7 +134,7 @@ class test_op_codes(unittest.TestCase):
         test_stack = op_codes1.op_codes.op_code91(test_stack)
         self.assertEqual(test_stack.pop(), bytes([12]))
         test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([-12]))
+        self.assertEqual(test_stack.pop(), bytearray([256-12]))
         test_stack = op_codes1.op_codes.op_code91(test_stack)
         self.assertEqual(test_stack.pop(), bytes([0]))
         test_stack = op_codes1.op_codes.op_code91(test_stack)

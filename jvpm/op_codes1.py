@@ -157,8 +157,15 @@ class op_codes:
                         if (var1 % 256) == 0:
                                 stack_z.append(bytes([0]))
                         else:
-                                var1 -= (256 * (var1//256))
-                                stack_z.append(bytearray([256-var1]))
+                                if (var1 // 256) % 2 == 0:
+                                        var1 -= (256 * (var1//256))
+                                        stack_z.append(bytes[var1])
+                                elif ((var1 // 256) % 2) > 1:
+                                        var1 -= (256 * (var1//256 + 1))
+                                        stack_z.append(bytearray([256-var1]))
+                                else:
+                                        var1 -= (256 * (var1//256 + 1))
+                                        stack_z.append(bytes[var1])
                 else:
                         if (var1 % 256) == 0:
                                 stack_z.append(bytes([0]))
