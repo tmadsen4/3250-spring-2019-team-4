@@ -173,3 +173,25 @@ class op_codes:
                                 var1 += (256 * (var1//256) * -1)
                                 stack_z.append(bytes([var1]))
                 return stack_z
+
+        def op_code92(stack_z):
+                var1 = stack_z.pop()
+                if var1 >= 32 & var1 <= 127:
+                        stack_z.append(chr(var1))
+                else:
+                        stack_z.append('?')
+                return stack_z
+
+        def op_code87(stack_z):
+                stack_z.append(float(stack_z.pop()))
+                return stack_z
+
+        def op_code86(stack_z):
+                return op_codes.op_code87(stack_z)
+
+        def op_code85(stack_z):
+                var1 = stack_z.pop()
+                stack_z.append(int(var1))
+                return stack_z
+
+

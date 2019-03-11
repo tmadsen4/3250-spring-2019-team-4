@@ -121,25 +121,71 @@ class test_op_codes(unittest.TestCase):
         test_stack = op_codes1.op_codes.op_code04(test_stack)
         self.assertEqual(test_stack.pop(), 1)
 
-    def test_opcode91(self): #convert int to byte
-        test_stack = [1, 2, 2147483647, -214748367, 500, -500, 256, -256, 768, 770]
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([254]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([0]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([0]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([0]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([12]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytearray([256-12]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([0]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([-1]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([2]))
-        test_stack = op_codes1.op_codes.op_code91(test_stack)
-        self.assertEqual(test_stack.pop(), bytes([1]))
+    #def test_opcode91(self): #convert int to byte
+    #    test_stack = [1, 2, 2147483647, -214748367, 500, -500, 256, -256, 768, 770]
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([254]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([0]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([0]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([0]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([12]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytearray([256-12]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([0]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([-1]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([2]))
+    #    test_stack = op_codes1.op_codes.op_code91(test_stack)
+    #    self.assertEqual(test_stack.pop(), bytes([1]))
+
+    def test_opcode92(self):
+        test_stack = [-100, 65, 75, 90, 97, 100, 122]
+        test_stack = op_codes1.op_codes.op_code92(test_stack)
+        self.assertEqual(test_stack.pop(), 'z')
+        test_stack = op_codes1.op_codes.op_code92(test_stack)
+        self.assertEqual(test_stack.pop(), 'd')
+        test_stack = op_codes1.op_codes.op_code92(test_stack)
+        self.assertEqual(test_stack.pop(), 'a')
+        test_stack = op_codes1.op_codes.op_code92(test_stack)
+        self.assertEqual(test_stack.pop(), 'Z')
+        test_stack = op_codes1.op_codes.op_code92(test_stack)
+        self.assertEqual(test_stack.pop(), 'K')
+        test_stack = op_codes1.op_codes.op_code92(test_stack)
+        self.assertEqual(test_stack.pop(), 'A')
+        test_stack = op_codes1.op_codes.op_code92(test_stack)
+        self.assertEqual(test_stack.pop(), '?')
+
+    def test_opcode87(self):
+        test_stack = [-100, 65, 75, 90]
+        test_stack = op_codes1.op_codes.op_code87(test_stack)
+        self.assertEqual(test_stack.pop(), 90.0)
+        test_stack = op_codes1.op_codes.op_code87(test_stack)
+        self.assertEqual(test_stack.pop(), 75.0)
+        test_stack = op_codes1.op_codes.op_code87(test_stack)
+        self.assertEqual(test_stack.pop(), 65.0)
+        test_stack = op_codes1.op_codes.op_code87(test_stack)
+        self.assertEqual(test_stack.pop(), -100.0)
+
+    def test_opcode86(self):
+        test_stack = [-100, 65, 75, 90]
+        test_stack = op_codes1.op_codes.op_code86(test_stack)
+        self.assertEqual(test_stack.pop(), 90.0)
+        test_stack = op_codes1.op_codes.op_code86(test_stack)
+        self.assertEqual(test_stack.pop(), 75.0)
+        test_stack = op_codes1.op_codes.op_code86(test_stack)
+        self.assertEqual(test_stack.pop(), 65.0)
+        test_stack = op_codes1.op_codes.op_code86(test_stack)
+        self.assertEqual(test_stack.pop(), -100.0)
+
+    def test_opcode85(self):
+        test_stack = [2147483647, -2147483647]
+        test_stack = op_codes1.op_codes.op_code85(test_stack)
+        self.assertEqual(test_stack.pop(), -2147483647)
+        test_stack = op_codes1.op_codes.op_code85(test_stack)
+        self.assertEqual(test_stack.pop(), 2147483647)
