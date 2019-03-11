@@ -194,4 +194,18 @@ class op_codes:
                 stack_z.append(int(var1))
                 return stack_z
 
+        def op_code1a(stack_z, varsarray):
+                stack_z.append(varsarray[0])
+                return stack_z
 
+        def op_code1b(stack_z, varsarray):
+                stack_z.append(varsarray[1])
+                return stack_z
+
+        def op_code1c(stack_z, varsarray):
+                stack_z.append(varsarray[2])
+                return stack_z
+
+        def op_code1d(stack_z, varsarray):
+                stack_z.append(varsarray[3])
+                return stack_z
