@@ -199,17 +199,17 @@ class test_op_codes(unittest.TestCase):
     def test_opcode1b(self):
         test_stack = []
         test_localvar = [20, 10]
-        test_stack = op_codes1.op_codes.op_code1a(test_stack, test_localvar)
-        self.assertEqual(test_stack.pop(), 20)
+        test_stack = op_codes1.op_codes.op_code1b(test_stack, test_localvar)
+        self.assertEqual(test_stack.pop(), 10)
 
     def test_opcode1c(self):
         test_stack = []
         test_localvar = [20, 10, 5]
-        test_stack = op_codes1.op_codes.op_code1a(test_stack, test_localvar)
-        self.assertEqual(test_stack.pop(), 20)
+        test_stack = op_codes1.op_codes.op_code1c(test_stack, test_localvar)
+        self.assertEqual(test_stack.pop(), 5)
 
     def test_opcode1d(self):
         test_stack = []
         test_localvar = [20, 5, 8, 9]
-        test_stack = op_codes1.op_codes.op_code1a(test_stack, test_localvar)
-        self.assertEqual(test_stack.pop(), 20)
+        test_stack = op_codes1.op_codes.op_code1d(test_stack, test_localvar)
+        self.assertEqual(test_stack.pop(), 9)
