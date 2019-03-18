@@ -4,6 +4,24 @@ All Methods for OP Codes go in this file
 
 class op_codes:
 
+        #emulates println for the different data types
+        def invokeVirtual():
+            if(tag_10 == "//java/io/PrintStream.print:(I)V"):
+                print(stack_z.pop())
+            elif(tag_10 == "//java/io/PrintStream.print:(D)V"):
+                print(stack_z.pop())
+            elif(tag_10 == "//java/io/PrintStream.print:(Z)V"):
+                if( == 1):
+                    print ("true")
+                elif( == 0):
+                    print ("false")
+                else
+                    print("this is not implemented.")
+                print(stack_z.pop())
+            elif(tag_10 == "//java/io/PrintStream/java.lang.String"):
+                print(stack_z.pop())
+
+
         def op_code70(stack_z):     #remainder
                 var1 = stack_z.pop() % stack_z.pop()
                 stack_z.append(var1)
@@ -20,7 +38,7 @@ class op_codes:
                 return stack_z
 
         def op_code7c(stack_z):		#shift right
-                var1 = stack_z.pop() >> stack_z.pop()  
+                var1 = stack_z.pop() >> stack_z.pop()
                 stack_z.append(var1)
                 return stack_z
 
