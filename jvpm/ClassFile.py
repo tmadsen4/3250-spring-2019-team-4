@@ -436,6 +436,7 @@ class JavaClassFile:
     def get_attribute_table_size(self):
         return self.classfile_attribute_table_size
 
+    #emulates println for the different types of data
     def invokeVirtual():
         if(tag_10 == "//java/io/PrintStream.print:(I)V"):
             print(stack_z.pop())
@@ -446,15 +447,6 @@ class JavaClassFile:
         elif(tag_10 == "//java/io/PrintStream/java.lang.String"):
             print(stack_z.pop())
 
-    def invokeVirtual(): 
-        if(tag_10 == "//java/io/PrintStream.print:(I)V"):
-            print(stack_z.pop())
-        elif(tag_10 == "//java/io/PrintStream.print:(D)V"):
-            print(stack_z.pop())
-        elif(tag_10 == "//java/io/PrintStream.print:(Z)V"):
-            print(stack_z.pop())
-        elif(tag_10 == "//java/io/PrintStream/java.lang.String"):
-            print(stack_z.pop())
 
     # For Testing
 
