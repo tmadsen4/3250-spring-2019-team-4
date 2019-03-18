@@ -436,16 +436,20 @@ class JavaClassFile:
     def get_attribute_table_size(self):
         return self.classfile_attribute_table_size
 
-    #emulates println for the different types of data
-    def invokeVirtual():
-        if(tag_10 == "//java/io/PrintStream.print:(I)V"):
-            print(stack_z.pop())
-        elif(tag_10 == "//java/io/PrintStream.print:(D)V"):
-            print(stack_z.pop())
-        elif(tag_10 == "//java/io/PrintStream.print:(Z)V"):
-            print(stack_z.pop())
-        elif(tag_10 == "//java/io/PrintStream/java.lang.String"):
-            print(stack_z.pop())
+    #parses constant table to check for #3, #13, #18, #24, #25, and #26
+    def decode_constant_table(constant_table):
+        for(i in constant_table):
+            #strings will be replaced with hexadecimal
+            if (i == "#3"):
+                if (i == "#17"):
+                    if (i == "#24"):
+                        return "PrintStream"
+                if (i == "#18"):
+                    if (i == "#25"):
+                        return "println"
+                    elif (i == "#26"):
+                        return "(I)V"
+                return
 
 
     # For Testing
