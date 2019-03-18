@@ -436,6 +436,26 @@ class JavaClassFile:
     def get_attribute_table_size(self):
         return self.classfile_attribute_table_size
 
+    def invokeVirtual():
+        if(tag_10 == "//java/io/PrintStream.print:(I)V"):
+            print(stack_z.pop())
+        elif(tag_10 == "//java/io/PrintStream.print:(D)V"):
+            print(stack_z.pop())
+        elif(tag_10 == "//java/io/PrintStream.print:(Z)V"):
+            print(stack_z.pop())
+        elif(tag_10 == "//java/io/PrintStream/java.lang.String"):
+            print(stack_z.pop())
+
+    def invokeVirtual(): 
+        if(tag_10 == "//java/io/PrintStream.print:(I)V"):
+            print(stack_z.pop())
+        elif(tag_10 == "//java/io/PrintStream.print:(D)V"):
+            print(stack_z.pop())
+        elif(tag_10 == "//java/io/PrintStream.print:(Z)V"):
+            print(stack_z.pop())
+        elif(tag_10 == "//java/io/PrintStream/java.lang.String"):
+            print(stack_z.pop())
+
     # For Testing
 
     def print_data(self):   # pragma: no cover
@@ -517,7 +537,7 @@ a.print_data()
             "0x64":op_codes1.op_codes.op_code64
             "0x82":op_codes1.op_codes.op_code82
         }
-        
+
         send(op_code_dict[input](stack_z))
 
 '''
